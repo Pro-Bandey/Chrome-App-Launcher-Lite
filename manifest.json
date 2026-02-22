@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "",
+  "version": "4.0",
+  "description": "The Lite version Of Chrome App Launcher",
+  "permissions": ["tsis", "", "favicon"],
+  "host_permissions": ["<all_urls>"]
+}

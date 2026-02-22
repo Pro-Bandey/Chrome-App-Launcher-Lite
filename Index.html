@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google App Launcher</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+
+  <!-- Context Menu -->
+  <div id="contextMenu" class="hidden">
+    <div data-action="open">Open</div>
+    <div data-action="newtab">Open in New Tab</div>
+    <div data-action="edit">Edit</div>
+    <div data-action="delete">Delete</div>
+  </div>
+
+  <!-- Control Buttons -->
+  <div id="controls">
+    <button id="addBtn">➕ Add</button>
+    <button id="exportBtn">📤 Export</button>
+    <input type="file" id="importFile" hidden>
+    <button id="importBtn">📥 Import</button>
+  </div>
+
+  <!-- Add/Edit Dialog -->
+  <div class="modal" id="addModal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="modalTitle">Add Shortcut</h2>
+      <input type="text" id="linkTitle" placeholder="Name e.g GitHub" />
+      <input type="text" id="linkURL" placeholder="example.com" />
+      <div class="modal-buttons">
+        <button class="add" onclick="submitLink()">Save</button>
+        <button class="cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
