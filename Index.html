@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Google App Launcher</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
 </head>
+
 <body>
-  <div class="grid" id="grid"></div>
-
-  <!-- Context Menu -->
-  <div id="contextMenu" class="hidden">
-    <div data-action="open">Open</div>
-    <div data-action="newtab">Open in New Tab</div>
-    <div data-action="edit">Edit</div>
-    <div data-action="delete">Delete</div>
-  </div>
-
+  <div class="cal-link-grid" id="cal-link-grid"></div>
   <!-- Control Buttons -->
-  <div id="controls">
-    <button id="addBtn">➕ Add</button>
-    <button id="exportBtn">📤 Export</button>
-    <input type="file" id="importFile" hidden>
-    <button id="importBtn">📥 Import</button>
+  <div id="cal-controls" class="cal-controls">
+    <button id="cal-add-btn">Add</button>
+    <button id="cal-export-btn">Export</button>
+    <input type="file" id="cal-import-file" accept="application/json" hidden>
+    <button id="cal-import-btn">Import</button>
+    <a href="products.json" target="_blank"><button>More Pr..</button></a>
   </div>
 
+
+
+
+  <!-- Context Menu of Cal -->
+  <div id="cal-contextMenu" class="context-menu">
+    <button class="menu-item" data-action="cal-open">Open</button>
+    <button class="menu-item" data-action="cal-Newtab">Open in New Tab</button>
+    <button class="menu-item" data-action="cal-incognito">In Incognito</button>
+    <button class="menu-item" data-action="cal-edit">Edit</button>
+    <button class="menu-item" data-action="cal-delete">Delete</button>
+  </div>
   <!-- Add/Edit Dialog -->
-  <div class="modal" id="addModal" style="display:none;">
-    <div class="modal-content">
-      <h2 id="modalTitle">Add Shortcut</h2>
-      <input type="text" id="linkTitle" placeholder="Name e.g GitHub" />
-      <input type="text" id="linkURL" placeholder="example.com" />
-      <div class="modal-buttons">
-        <button class="add" onclick="submitLink()">Save</button>
-        <button class="cancel" onclick="closeModal()">Cancel</button>
+  <div class="add-link-box" id="cal-popupBox" style="display:none;">
+    <div class="add-link-box-content">
+      <h2 id="add-link-heading">Add/Edit Shortcut</h2>
+      <input type="text" id="cal-link-Tittle" autocomplete="off" placeholder="Name" />
+      <input type="text" id="cal-link-Url" autocomplete="off" placeholder="example.com" />
+      <div class="add-link-box-buttons">
+        <button class="add" id="cal-save-btn">Save</button>
+        <button class="cancel" id="cal-cancel-btn">Cancel</button>
       </div>
     </div>
   </div>
 
   <script src="index.js"></script>
 </body>
+
 </html>
