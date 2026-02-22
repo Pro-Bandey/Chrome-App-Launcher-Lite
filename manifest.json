@@ -4,13 +4,19 @@
   "version": "4.0",
   "description": "The Lite version Of Chrome App Launcher",
 
-  "permissions": ["tabs", "storage", "sidePanel"],
+  "permissions": ["tabs", "storage", "sidePanel", "activeTab"],
 
   "host_permissions": ["<all_urls>"],
 
   "action": {
     "default_popup": "index.html",
-    "default_title": "Open Launcher"
+    "default_title": "Open Launcher",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
   },
 
   "side_panel": {
@@ -22,5 +28,21 @@
     "32": "icons/32.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
+      },
+      "description": "Open the launcher"
+    },
+    "add-new-link": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Add a new shortcut"
+    }
   }
 }
