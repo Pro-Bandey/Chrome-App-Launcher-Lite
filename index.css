@@ -118,24 +118,17 @@ body {
   border-radius: var(--radius-sm);
 }
 
-.card .namel {
+.card .name {
   width: 100%;
   margin: auto;
   margin-top: 5px;
+  color: var(--text);
   font-size: 14px;
   overflow: clip;
   text-wrap-mode: nowrap;
   text-overflow: ellipsis;
+  text-align: center;
   animation: fade3 2s ease-in-out;
-}
-
-.card .name {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  color: var(--text);
-  width: 90px;
-
 }
 
 @keyframes fade3 {
