@@ -498,15 +498,18 @@ body {
 
 .info-dialog-content {
   text-align: left;
-  padding: 0 20px 20px 20px;
 }
 
 .info-dialog-content h3 {
-  margin-top: 20px;
+  margin: 20px 0 0 20px;
+}
+
+.info-dialog-content p {
+  margin: 0 20px;
 }
 
 .info-dialog-content ul {
-  padding-left: 20px;
+  padding: 0 35px;
 }
 
 #cal-info-close-btn {
