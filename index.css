@@ -135,6 +135,9 @@ body {
   animation: fade3 0.5s ease-in-out;
   border: 1px solid transparent;
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .card.dragging {

@@ -1,4 +1,7 @@
-(function() {
+(function () {
+  const extAPI = (typeof chrome !== "undefined" && chrome.runtime) ? chrome : ((typeof browser !== "undefined" && browser.runtime) ? browser : null);
+  const storageAPI = extAPI && extAPI.storage ? (extAPI.storage.sync || extAPI.storage.local) : null;
+
   // ===== Variables =====
   let launcherLinks = [];
   let currentIndex = null;
@@ -46,20 +49,20 @@
   const deleteConfirmBtn = deleteConfirmBox.querySelector("#deleteConfirmBtn");
   const deleteCancelBtn = deleteConfirmBox.querySelector("#deleteCancelBtn");
 
-  const storage = chrome?.storage?.sync ? chrome.storage.sync : chrome?.storage?.local;
-
+  // ===== Logic =====
   function saveLauncherLinks() {
-    if (storage) {
-      storage.set({ launcherLinks });
+    if (storageAPI) {
+      storageAPI.set({ launcherLinks });
     } else {
       localStorage.setItem("launcherLinks", JSON.stringify(launcherLinks));
     }
   }
 
   function loadLauncherLinks() {
-    if (storage) {
-      storage.get(["launcherLinks"], res => {
-        launcherLinks = (res.launcherLinks && res.launcherLinks.length) ? res.launcherLinks : getDefaultLinks();
+    if (storageAPI) {
+      storageAPI.get(["launcherLinks"], res => {
+        if (extAPI.runtime.lastError) console.warn(extAPI.runtime.lastError);
+        launcherLinks = (res && res.launcherLinks && res.launcherLinks.length) ? res.launcherLinks : getDefaultLinks();
         renderGrid();
       });
     } else {
@@ -167,12 +170,14 @@
       const bg = getRandomColor();
       const color = "#fff";
       card.innerHTML = `<div class="icon" style="background:${bg};color:${color};">${fallback}</div><div class="name">${link.name}</div><div class="menu-btn">⋮</div>`;
+
       card.addEventListener("click", e => { if (!e.target.classList.contains("menu-btn")) openLink(idx, false); });
       card.addEventListener("contextmenu", e => { e.preventDefault(); currentIndex = idx; showContextMenu(e.pageX, e.pageY); });
       card.querySelector(".menu-btn").addEventListener("click", e => { e.stopPropagation(); currentIndex = idx; showContextMenu(e.pageX, e.pageY); });
       card.addEventListener('dragstart', () => { draggedItem = card; setTimeout(() => card.classList.add('dragging'), 0); });
       card.addEventListener('dragend', () => { card.classList.remove('dragging'); draggedItem = null; });
       grid.appendChild(card);
+
       loadFavicon(card, link, fallback, bg, color);
     });
     saveLauncherLinks();
@@ -181,19 +186,24 @@
   function loadFavicon(card, link, fallback, bg, color) {
     const icon = card.querySelector(".icon");
     if (link.icon) { icon.innerHTML = `<img src="${link.icon}" alt="${link.name}">`; icon.style.background = 'transparent'; return; }
-    const hostname = new URL(link.url).hostname;
-    const sources = [ e => `https://www.google.com/s2/favicons?sz=64&domain=${e}`, e => `https://icons.duckduckgo.com/ip2/${e}.ico`, e => `https://logo.clearbit.com/${e}` ];
-    let i = 0;
-    function tryNext() {
+    try {
+      const hostname = new URL(link.url).hostname;
+      const sources = [e => `https://www.google.com/s2/favicons?sz=64&domain=${e}`, e => `https://icons.duckduckgo.com/ip2/${e}.ico`, e => `https://logo.clearbit.com/${e}`];
+      let i = 0;
+      function tryNext() {
         if (i >= sources.length) { icon.innerHTML = fallback; icon.style.background = bg; icon.style.color = color; return; }
         const img = document.createElement("img");
         img.src = sources[i](hostname);
         img.onload = () => { icon.innerHTML = ""; icon.style.background = "transparent"; icon.appendChild(img); };
         img.onerror = () => { i++; tryNext(); };
+      }
+      tryNext();
+    } catch (e) {
+      icon.innerHTML = fallback; icon.style.background = bg; icon.style.color = color;
     }
-    tryNext();
   }
 
+  // Drag and Drop
   grid.addEventListener('dragover', e => {
     e.preventDefault();
     const afterElement = getDragAfterElement(grid, e.clientY);
@@ -247,10 +257,10 @@
   function openLink(index, newTab = false) {
     if (index < 0 || index >= launcherLinks.length) return;
     const url = launcherLinks[index].url;
-    if (chrome?.tabs) {
-      newTab ? chrome.tabs.create({ url }) : chrome.tabs.query({ active: true, currentWindow: true }, t => {
-        if(t[0]) chrome.tabs.update(t[0].id, { url });
-        else chrome.tabs.create({ url });
+    if (extAPI && extAPI.tabs) {
+      newTab ? extAPI.tabs.create({ url }) : extAPI.tabs.query({ active: true, currentWindow: true }, t => {
+        if (t && t[0]) extAPI.tabs.update(t[0].id, { url });
+        else extAPI.tabs.create({ url });
       });
     } else {
       newTab ? window.open(url, "_blank") : window.open(url, "_self");
@@ -261,8 +271,11 @@
   function openIncognito(index) {
     if (index < 0 || index >= launcherLinks.length) return;
     const url = launcherLinks[index].url;
-    if (chrome?.windows) { chrome.windows.create({ url: url, incognito: true }); }
-    else { alert("Incognito mode is only supported in the Chrome extension environment."); }
+    if (extAPI && extAPI.windows) {
+      extAPI.windows.create({ url: url, incognito: true });
+    } else {
+      alert("Incognito mode is only supported in the browser extension environment.");
+    }
     contextMenu.style.display = "none";
   }
 
@@ -337,15 +350,15 @@
   };
 
   importBtn.onclick = () => importFile.click();
-  
+
   resetBtn.onclick = () => {
     if (confirm("Are you sure you want to reset all shortcuts to the default list? This cannot be undone.")) {
-        if (storage) {
-            storage.remove("launcherLinks", () => { window.location.reload(); });
-        } else {
-            localStorage.removeItem("launcherLinks");
-            window.location.reload();
-        }
+      if (storageAPI) {
+        storageAPI.remove("launcherLinks", () => { window.location.reload(); });
+      } else {
+        localStorage.removeItem("launcherLinks");
+        window.location.reload();
+      }
     }
   };
 
@@ -372,12 +385,12 @@
     if (e.key === 'Escape') { closeModal(); deleteConfirmBox.style.display = 'none'; infoDialog.style.display = 'none'; }
   });
 
-  if (chrome?.commands) {
-      chrome.commands.onCommand.addListener((command) => {
-          if (command === "add-new-link") {
-              openModal(false);
-          }
-      });
+  if (extAPI && extAPI.commands) {
+    extAPI.commands.onCommand.addListener((command) => {
+      if (command === "add-new-link") {
+        openModal(false);
+      }
+    });
   }
 
   applyTheme();
