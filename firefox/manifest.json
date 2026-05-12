@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Browser App Launcher Lite",
-  "version": "4.0",
+  "version": "5.0",
   "description": "The Lite version Of Chrome App Launcher",
-  "permissions": ["tabs", "storage", "activeTab"],
+  "permissions": ["tabs", "storage", "activeTab", "topSites"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "index.html",
