@@ -71,8 +71,11 @@
   function getDefaultLinks() {
     return [
       { "fallback": "GS", "name": "Google Search", "url": "https://www.google.com", "category": "Search" },
-      { "fallback": "MAP", "name": "Google Maps", "url": "https://maps.google.com", "category": "Utility" },
-      { "fallback": "TRA", "name": "Google Translate", "url": "https://translate.google.com", "category": "Utility" },
+      { "fallback": "Bi", "name": "Bing", "url": "https://www.bing.com", "category": "Search" },
+      { "fallback": "DDG", "name": "DuckDuckGo", "url": "https://www.duckduckgo.com", "category": "Search" },
+      { "fallback": "SP", "name": "StartPage", "url": "https://www.startpage.com", "category": "Search" },
+      { "fallback": "MAP", "name": "Google Maps", "url": "https://maps.google.com", "category": "Tools" },
+      { "fallback": "TRA", "name": "Google Translate", "url": "https://translate.google.com", "category": "Tools" },
       { "fallback": "GMA", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" },
       { "fallback": "GD", "name": "Google Drive", "url": "https://drive.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png" },
       { "fallback": "GC", "name": "Google Calendar", "url": "https://calendar.google.com", "category": "Work", "icon": "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" },
@@ -91,18 +94,18 @@
       { "fallback": "TEL", "name": "Telegram Web", "url": "https://web.telegram.org", "category": "Social" },
       { "fallback": "GPT", "name": "ChatGPT", "url": "https://chat.openai.com", "category": "AI" },
       { "fallback": "CL", "name": "Claude", "url": "https://claude.ai", "category": "AI" },
-      { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Code" },
-      { "fallback": "SO", "name": "Stack Overflow", "url": "https://stackoverflow.com", "category": "Code" },
-      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Media" },
-      { "fallback": "NFL", "name": "Netflix", "url": "https://www.netflix.com", "category": "Media" },
-      { "fallback": "SPT", "name": "Spotify", "url": "https://open.spotify.com", "category": "Media" },
-      { "fallback": "TWT", "name": "Twitch", "url": "https://www.twitch.tv", "category": "Media" },
-      { "fallback": "PRM", "name": "Prime Video", "url": "https://www.primevideo.com", "category": "Media" },
+      { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Dev" },
+      { "fallback": "SO", "name": "Stack Overflow", "url": "https://stackoverflow.com", "category": "Dev" },
+      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment" },
+      { "fallback": "NFL", "name": "Netflix", "url": "https://www.netflix.com", "category": "Entertainment" },
+      { "fallback": "SPT", "name": "Spotify", "url": "https://open.spotify.com", "category": "Entertainment" },
+      { "fallback": "TWT", "name": "Twitch", "url": "https://www.twitch.tv", "category": "Entertainment" },
+      { "fallback": "PRM", "name": "Prime Video", "url": "https://www.primevideo.com", "category": "Entertainment" },
       { "fallback": "AMZ", "name": "Amazon", "url": "https://www.amazon.com", "category": "Shopping" },
       { "fallback": "EBY", "name": "eBay", "url": "https://www.ebay.com", "category": "Shopping" },
       { "fallback": "ALI", "name": "AliExpress", "url": "https://www.aliexpress.com", "category": "Shopping" },
-      { "fallback": "WIK", "name": "Wikipedia", "url": "https://www.wikipedia.org", "category": "Info" },
-      { "fallback": "BBC", "name": "BBC News", "url": "https://www.bbc.com/news", "category": "Info" }
+      { "fallback": "WIK", "name": "Wikipedia", "url": "https://www.wikipedia.org", "category": "Infomation" },
+      { "fallback": "BBC", "name": "BBC News", "url": "https://www.bbc.com/news", "category": "Infomation" }
     ];
   }
   function generateFallback(name) {
@@ -140,7 +143,7 @@
       const card = document.createElement("div");
       card.className = "card";
       if (link.isPinned) card.classList.add("pinned");
-      card.title = link.name + (link.category ? ` (${link.category})` : "");
+      card.title = `&chr=20;${link.name}&chr;` + (link.category ? `&cl=var(--accent); (${link.category})&cl;` : "");
       card.dataset.index = idx;
       card.draggable = true;
       const fallback = link.fallback || generateFallback(link.name);
@@ -210,7 +213,7 @@
     if (action === "cal-open") openLink(currentIndex, false);
     else if (action === "cal-Newtab") openLink(currentIndex, true);
     else if (action === "cal-incognito") openIncognito(currentIndex);
-    else if (action === "cal-edit") { editingIndex = currentIndex; openModal(true);  }
+    else if (action === "cal-edit") { editingIndex = currentIndex; openModal(true); }
     else if (action === "cal-delete") { launcherLinks.splice(currentIndex, 1); saveLauncherLinks(); populateCategories(); renderGrid(); }
   });
   function openLink(index, newTab = false) {
@@ -244,7 +247,7 @@
           const item = document.createElement("div");
           item.className = "top-site-item";
           item.innerHTML = `
-                    <div class="top-site-info">
+                    <div title="Add &cl=var(--accent);&chr=30;${site.title || site.url}&chr;&cl;" class="top-site-info">
                         <span class="top-site-title">${site.title || site.url}</span>
                         <span class="top-site-url">${site.url}</span>
                     </div>
@@ -268,12 +271,12 @@
   function openModal(edit = false) {
     popupBox.style.display = "flex";
     if (edit && editingIndex !== null) {
-      popupBoxTitle.textContent ="Edit Shortcut";
+      popupBoxTitle.textContent = "Edit Shortcut";
       const l = launcherLinks[editingIndex];
       linkTitleInput.value = l.name; linkUrlInput.value = l.url; linkCategoryInput.value = l.category || '';
       linkIconUrlInput.value = l.icon && l.icon.startsWith('http') ? l.icon : '';
     } else {
-      popupBoxTitle.textContent ="Add Shortcut"; linkTitleInput.value = ""; linkUrlInput.value = ""; linkCategoryInput.value = ""; linkIconUrlInput.value = ""; editingIndex = null;
+      popupBoxTitle.textContent = "Add Shortcut"; linkTitleInput.value = ""; linkUrlInput.value = ""; linkCategoryInput.value = ""; linkIconUrlInput.value = ""; editingIndex = null;
     }
     linkIconFileInput.value = ''; linkTitleInput.focus();
   }
