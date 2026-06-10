@@ -1,8 +1,8 @@
 # 🚀 Chrome App Launcher Lite
 
-On FireFox It Called **Browser App Launcher Lite**
+On FireFox or Other Browsers It Called **Browser App Launcher Lite**
 
-A lightweight, customizable Extension that lets you create and manage a beautiful grid of website shortcuts — similar to a mini app launcher.
+A lightweight, customizable Extension that lets you create and manage website shortcuts — similar to a mini app launcher.
 
 Chrome App Launcher Lite allows you to:
 
