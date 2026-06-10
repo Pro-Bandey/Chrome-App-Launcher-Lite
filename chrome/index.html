@@ -5,14 +5,23 @@
   <meta charset="UTF-8">
   <title>App Launcher Lite</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="shortcut icon" href="icons/32.png" type="image/x-icon">
 </head>
 
 <body>
+  <!-- Header Area -->
   <div class="cal-header">
     <input title="Type To Search" type="text" id="cal-search-bar" placeholder="Search...">
-    <select title="Filter Site By Category" id="cal-category-filter">
-      <option value="All">All Categories</option>
+
+    <select title="Sort Shortcuts" id="cal-sort-select">
+      <option value="name">Name (A-Z)</option>
+      <option value="name-desc">Name (Z-A)</option>
+      <option value="newest">New First</option>
+      <option value="oldest">Old First</option>
+      <option value="most-visited">Most Visited</option>
+      <option value="least-visited">Least Visited</option>
     </select>
+
     <button id="cal-theme-toggle" title="Switch Theme">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
         <path
@@ -21,27 +30,31 @@
     </button>
   </div>
 
+  <!-- Dynamic Categories Tab Bar -->
+  <div class="cal-tabs-container" id="cal-tabs-container"></div>
+
+  <!-- Shortcuts Grid -->
   <div class="cal-link-grid" id="cal-link-grid"></div>
 
+  <!-- Base Controls Area -->
   <div id="cal-controls" class="cal-controls">
     <button title="Add New Shortcut" id="cal-add-btn">Add</button>
     <button title="Top Suggested Sites" id="cal-suggested-btn">Suggested</button>
-    <button title="Export Backup" id="cal-export-btn">Export</button>
-    <input type="file" id="cal-import-file" accept="application/json" hidden>
-    <button title="Restore Confige" id="cal-import-btn">Import</button>
+    <button title="Settings" id="cal-settings-btn">Settings</button>
     <button title="App Info" id="cal-info-btn">Info</button>
-    <button title="Restore To Default" id="cal-reset-btn" class="danger">Reset</button>
   </div>
 
+  <!-- Right-Click Context Menu -->
   <div id="cal-contextMenu" class="context-menu">
     <button title="Open" class="menu-item" data-action="cal-open">Open</button>
     <button title="Open in New Tab" class="menu-item" data-action="cal-Newtab">Open in Tab</button>
     <button title="Open in Incognito Tab" class="menu-item" data-action="cal-incognito">Open in Incognito</button>
-    <!-- <button title="Pin/Unpin This Shortcut" class="menu-item" data-action="cal-pin">Pin/UnPin</button> -->
+    <button title="Pin/Unpin This Shortcut" class="menu-item" data-action="cal-pin">Pin/Unpin</button>
     <button title="Edit This Shortcut" class="menu-item" data-action="cal-edit">Edit</button>
     <button title="Delete This Shortcut" class="menu-item" data-action="cal-delete">Delete</button>
   </div>
 
+  <!-- Add/Edit Modal Box -->
   <div class="add-link-box" id="cal-popupBox" style="display:none;">
     <div class="add-link-box-content">
       <h2 id="add-link-heading">Add Shortcut</h2>
@@ -50,19 +63,20 @@
       <input title="Select Category" type="text" id="cal-link-Category" autocomplete="off"
         placeholder="Category (e.g. Work, Social)" list="category-suggestions" />
       <datalist id="category-suggestions"></datalist>
-      <input title="Past Icon URL" type="text" id="cal-link-Icon-Url" autocomplete="off"
+      <input title="Paste Icon URL" type="text" id="cal-link-Icon-Url" autocomplete="off"
         placeholder="Optional: Icon URL" />
       <div title="Upload Icon From Local" class="icon-uploader">
         <span>Or upload icon:</span>
         <input type="file" id="cal-link-Icon-File" accept="image/*">
       </div>
       <div class="add-link-box-buttons">
-        <button title="Save Changes " class="add" id="cal-save-btn">Save</button>
+        <button title="Save Changes" class="add" id="cal-save-btn">Save</button>
         <button title="Cancel Changes" class="cancel" id="cal-cancel-btn">Cancel</button>
       </div>
     </div>
   </div>
 
+  <!-- Suggested Sites Modal -->
   <div id="cal-suggested-dialog" class="info-dialog" style="display: none;">
     <div class="info-dialog-content">
       <h2 class="info-dialog-heading">Top Visited Sites</h2>
@@ -71,13 +85,85 @@
     </div>
   </div>
 
-  <div id="cal-info-dialog" class="info-dialog" style="display: none;">
-    <div class="info-dialog-content">
-      <h2 class="info-dialog-heading">App Information</h2>
+  <!-- Settings Side Panel (Sliding Drawer) -->
+  <div id="cal-settings-panel" class="side-panel">
+    <div class="side-panel-header">
+      <h2>Settings</h2>
+      <button class="side-panel-close" id="cal-settings-close-btn">&times;</button>
+    </div>
+    <div class="side-panel-content">
+      <!-- Section 1: Categories Manager -->
+      <div class="settings-section">
+        <h3>Manage Tab Categories</h3>
+        <div class="category-manager-input">
+          <input type="text" id="cal-new-category-input" placeholder="New Category...">
+          <button id="cal-add-category-btn">Add</button>
+          <div id="cal-categories-list" class="settings-list"></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Layout / Appearance Settings -->
+      <div class="settings-section">
+        <h3>Appearance</h3>
+        <div class="settings-row">
+          <label for="cal-shape-select">Icon Shape:</label>
+          <select id="cal-shape-select">
+            <option value="rounded">Rounded Square</option>
+            <option value="circle">Circle</option>
+            <option value="square">Square</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 3: GitHub Gist Cloud Sync -->
+      <div class="settings-section">
+        <h3>Cloud Sync (GitHub Gist)</h3>
+        <div class="settings-field">
+          <label for="cal-gh-token">GitHub Token:</label>
+          <input type="password" id="cal-gh-token" placeholder="ghp_xxxxxxxx">
+        </div>
+        <div class="settings-field">
+          <label for="cal-gist-id">Gist ID (Optional):</label>
+          <input type="text" id="cal-gist-id" placeholder="Paste Existing Gist ID">
+        </div>
+        <div class="settings-row sync-actions">
+          <button id="cal-sync-push-btn" title="Save current config to Cloud">Push</button>
+          <button id="cal-sync-pull-btn" title="Download config from Cloud">Pull</button>
+        </div>
+      </div>
+
+      <!-- Section 4: Data Portability & Resets -->
+      <div class="settings-section">
+        <h3>Data Backup</h3>
+        <div class="settings-row">
+          <button title="Export Backup" id="cal-export-btn">Export</button>
+          <button title="Restore Backup" id="cal-import-btn">Import</button>
+          <input type="file" id="cal-import-file" accept="application/json" hidden />
+          <button title="Restore To Default" id="cal-reset-btn" class="danger">Reset Layout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Side Panel (Sliding Drawer) -->
+  <div id="cal-info-panel" class="side-panel">
+    <div class="side-panel-header">
+      <h2>App Information</h2>
+      <button class="side-panel-close" id="cal-info-close-btn">&times;</button>
+    </div>
+    <div class="side-panel-content app-info-content">
       <h2><strong>Chrome App Launcher</strong></h2>
-      <h3><strong>Version:</strong> 5.0 </h3>
-      <p>Features added: Google Sync Top Sites Auto-fill Categories UI enhancements</p>
-      <button title="Close" id="cal-info-close-btn">Close</button>
+      <h3><strong>Version:</strong> 6.0</h3>
+      <p>A high-performance shortcut launcher optimized for smooth cross-browser experiences.</p>
+
+      <h4>Key Features Implemented:</h4>
+      <ul>
+        <li>Integrated Gist Cloud Synchronization.</li>
+        <li>Drag-and-Drop external links and sorting.</li>
+        <li>Dynamic Tabbed Categories.</li>
+        <li>Extended customization options.</li>
+        <li>Resolved link routing navigation issues.</li>
+      </ul>
     </div>
   </div>
 
