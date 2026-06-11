@@ -5,7 +5,7 @@
   // App States
   let launcherLinks = [];
   let launcherCategories = [];
-  let launcherSettings = { iconShape: "rounded", ghToken: "", gistId: "" };
+  let launcherSettings = { iconShape: "square", ghToken: "", gistId: "" };
 
   let currentIndex = null;
   let editingIndex = null;
@@ -55,7 +55,7 @@
   const importFile = document.getElementById("calImportFile");
   const resetBtn = document.getElementById("calResetBtn");
 
-  // Custom Promise-Based Dialogue Elements
+  // Custom Modal Elements Object
   const _modal = {
     backdrop: document.getElementById("confirmAndAlertBox"),
     titleEl: document.getElementById("confirmAndAlertBoxTitle"),
@@ -65,7 +65,6 @@
     visible: false
   };
 
-  // Initialize Storage Engine Sync Listeners
   if (storageAPI && extAPI.storage.onChanged) {
     extAPI.storage.onChanged.addListener((changes, area) => {
       if ((area === 'sync' || area === 'local')) {
@@ -127,9 +126,10 @@
   }
 
   function applySettings() {
-    const shape = launcherSettings.iconShape || "rounded";
+    const shape = launcherSettings.iconShape || "square";
     shapeSelect.value = shape;
-    grid.className = `calLinkGrid shape${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+    const capitalizedShape = shape.charAt(0).toUpperCase() + shape.slice(1);
+    grid.className = `calLinkGrid shape${capitalizedShape}`;
     document.getElementById("calGhToken").value = launcherSettings.ghToken || "";
     document.getElementById("calGistId").value = launcherSettings.gistId || "";
   }
@@ -138,79 +138,12 @@
     return [
       { "fallback": "GS", "name": "Google Search", "url": "https://www.google.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000000 },
       { "fallback": "Bi", "name": "Bing", "url": "https://www.bing.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000001 },
-      { "fallback": "GMA", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico", "clicks": 0, "dateAdded": 1717000000002 },
+      { "fallback": "GML", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico", "clicks": 0, "dateAdded": 1717000000002 },
       { "fallback": "X", "name": "X (Twitter)", "url": "https://x.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000003 },
       { "fallback": "GPT", "name": "ChatGPT", "url": "https://chat.openai.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000004 },
       { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000005 },
-      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000006 },
-      { "fallback": "FB", "name": "Facebook", "url": "https://www.facebook.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000007 }
+      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000006 }
     ];
-  }
-
-  // Custom Promise-Based Dialogue Window Logic
-  function _showModal(title, msg, options = { showCancel: true, okText: "OK", cancelText: "Cancel" }) {
-    return new Promise((resolve) => {
-      if (!_modal.backdrop) {
-        resolve(window.confirm(msg));
-        return;
-      }
-
-      function cleanup() {
-        _modal.okBtn.removeEventListener("click", onOk);
-        _modal.cancelBtn.removeEventListener("click", onCancel);
-        document.removeEventListener("keydown", onKeyDown);
-        _modal.backdrop.classList.add("hidden");
-        _modal.backdrop.setAttribute("aria-hidden", "true");
-        _modal.visible = false;
-      }
-
-      function onOk() {
-        cleanup();
-        resolve(true);
-      }
-
-      function onCancel() {
-        cleanup();
-        resolve(false);
-      }
-
-      function onKeyDown(e) {
-        if (e.key === "Escape") onCancel();
-        if (e.key === "Enter" && document.activeElement !== _modal.cancelBtn) onOk();
-      }
-
-      _modal.titleEl.textContent = title || "";
-      _modal.msgEl.innerHTML = msg || "";
-      _modal.okBtn.textContent = options.okText || "OK";
-      _modal.cancelBtn.textContent = options.cancelText || "Cancel";
-      _modal.cancelBtn.style.display = options.showCancel ? "" : "none";
-
-      _modal.backdrop.classList.remove("hidden");
-      _modal.backdrop.setAttribute("aria-hidden", "false");
-      _modal.visible = true;
-      _modal.okBtn.focus();
-
-      _modal.okBtn.addEventListener("click", onOk);
-      _modal.cancelBtn.addEventListener("click", onCancel);
-      document.addEventListener("keydown", onKeyDown);
-    });
-  }
-
-  function showConfirm(msg, title = "Confirm Action") {
-    return _showModal(title, msg, { showCancel: true, okText: "Yes", cancelText: "No" });
-  }
-
-  function showAlert(msg, title = "Alert") {
-    return _showModal(title, msg, { showCancel: false, okText: "OK" });
-  }
-
-  // Debounce Optimization Helper
-  function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), delay);
-    };
   }
 
   // Dynamic Tabs Controller
@@ -239,7 +172,7 @@
     });
   }
 
-  // Unified Multi-Sort Filter Grid System with DocumentFragment Optimization
+  // Unified Multi-Sort Filter Grid System using DocumentFragment
   function renderGrid() {
     grid.innerHTML = "";
     const searchTerm = searchBar.value.toLowerCase();
@@ -292,7 +225,6 @@
       if (link.isPinned) card.classList.add("pinned");
       card.title = `${link.name}` + (link.category ? ` (${link.category})` : "") + ` | Visited: ${link.clicks || 0}`;
       card.dataset.index = idx;
-      card.draggable = false; // Disabled internal element dragging capabilities
 
       const fallback = link.fallback || generateFallback(link.name);
       const bg = getRandomColor();
@@ -322,7 +254,6 @@
     grid.appendChild(fragment);
   }
 
-  // Programmatic Link Routing Navigation
   function openLink(index, newTab = false) {
     if (index < 0 || index >= launcherLinks.length) return;
     const link = launcherLinks[index];
@@ -343,10 +274,10 @@
     }
   }
 
-  async function openIncognito(index) {
+  function openIncognito(index) {
     const url = launcherLinks[index].url;
     if (extAPI && extAPI.windows) extAPI.windows.create({ url: url, incognito: true });
-    else await showAlert("Incognito unavailable in current context.", "Feature Restricted");
+    else showAlert("Incognito option is unavailable in the current workspace.", "System Warning");
   }
 
   function generateFallback(name) {
@@ -360,7 +291,7 @@
     return `hsl(${h},${s}%,${l}%)`;
   }
 
-  // Optimized Favicon Cache and Fetching Engine
+  // Favicon Loader Engine with Runtime Caching
   function loadFavicon(card, link, fallback) {
     const icon = card.querySelector(".icon");
     if (link.icon) {
@@ -383,7 +314,7 @@
           icon.innerHTML = "";
           icon.style.background = "transparent";
           icon.appendChild(img);
-          link.icon = img.src; // Save successfully resolved asset URL inside Storage Cache
+          link.icon = img.src;
           saveAll();
         };
         img.onerror = () => { i++; tryNext(); };
@@ -392,7 +323,7 @@
     } catch (e) { }
   }
 
-  // External Drag and Drop Bookmarks Sync Ingestion (No Internal Re-ordering)
+  // Drag and Drop (External Link Drops Only - Internal Sorting Disabled)
   grid.addEventListener('dragover', e => {
     e.preventDefault();
   });
@@ -444,24 +375,21 @@
     }
     else if (action === "calEdit") { editingIndex = currentIndex; openModal(true); }
     else if (action === "calDelete") {
+      showCoconfirm('Are you');
       launcherLinks.splice(currentIndex, 1);
       saveAll();
       renderGrid();
     }
   });
 
-  // Settings Slide Drawer Panels
+  // Drawer Panel Event Handlers
   settingsBtn.addEventListener("click", () => settingsPanel.classList.add("open"));
   settingsCloseBtn.addEventListener("click", () => settingsPanel.classList.remove("open"));
 
   infoBtn.addEventListener("click", () => infoPanel.classList.add("open"));
   infoCloseBtn.addEventListener("click", () => infoPanel.classList.remove("open"));
 
-<<<<<<< Updated upstream
-  // Category Tab settings control manager
-=======
-  // Category Tab Actions
->>>>>>> Stashed changes
+  // Category Tab control manager
   addCatBtn.addEventListener("click", () => {
     const name = newCatInput.value.trim();
     if (name && !launcherCategories.includes(name)) {
@@ -471,7 +399,7 @@
       renderTabs();
       renderCategorySettingsList();
     } else {
-      showAlert('Plaese type a category name input bar first.')
+      showAlert('Please type or paste category name in input first');
     }
   });
 
@@ -489,8 +417,8 @@
 
   async function deleteCategory(index) {
     const catName = launcherCategories[index];
-    const confirmDelete = await showConfirm(`Are you sure you want to remove the Category: "${catName}"? Existing shortcuts inside will default back into "General".`, "Delete Category");
-    if (confirmDelete) {
+    const confirmed = await showConfirm(`Are you sure you want to remove the Category: "${catName}"? Existing shortcuts inside will default back to "General".`, "Delete Category");
+    if (confirmed) {
       launcherLinks.forEach(l => { if (l.category === catName) l.category = ""; });
       launcherCategories.splice(index, 1);
       saveAll();
@@ -500,24 +428,21 @@
     }
   }
 
-  // Shape Configuration Change Control
+  // Shape Configuration Control
   shapeSelect.addEventListener("change", () => {
     launcherSettings.iconShape = shapeSelect.value;
     saveAll();
     applySettings();
   });
 
-  // Gist Cloud Sync push/pull mechanisms
+  // Gist Cloud Sync push/pull mechanism
   syncPushBtn.addEventListener("click", async () => {
-<<<<<<< Updated upstream
-    const token = document.getElementById("cal-gh-token").value.trim();
-    let gistId = document.getElementById("cal-gist-id").value.trim();
-    if (!token) return alert("GitHub Personal Access Token is required to Sync.");
-=======
     const token = document.getElementById("calGhToken").value.trim();
     let gistId = document.getElementById("calGistId").value.trim();
-    if (!token) return showAlert("GitHub Personal Access Token is required to Sync.", "Authentication Error");
->>>>>>> Stashed changes
+    if (!token) {
+      await showAlert("GitHub Personal Access Token is required to execute Cloud Sync.", "Access Denied");
+      return;
+    }
 
     launcherSettings.ghToken = token;
     saveAll();
@@ -552,16 +477,19 @@
         launcherSettings.gistId = gistId;
         saveAll();
       }
-      await showAlert("Successful push transfer directly to GitHub Cloud!", "Sync Complete");
+      await showAlert("Configuration successfully sent and backed up to GitHub Cloud!", "Cloud Sync");
     } catch (err) {
-      await showAlert("Cloud push sync failed: " + err.message, "Sync Error");
+      await showAlert("Cloud push synchronization failed: " + err.message, "Sync Error");
     }
   });
 
   syncPullBtn.addEventListener("click", async () => {
     const token = document.getElementById("calGhToken").value.trim();
     const gistId = document.getElementById("calGistId").value.trim();
-    if (!token || !gistId) return showAlert("Both API Token and Gist ID are required to request storage pull.", "Pull Error");
+    if (!token || !gistId) {
+      await showAlert("Both personal API Token and Gist ID are required to pull backup data.", "Sync Error");
+      return;
+    }
 
     try {
       const res = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -578,17 +506,17 @@
           launcherSettings = { ...launcherSettings, ...parsed.launcherSettings };
           saveAll();
           sanitizeAndRender();
-          await showAlert("Successful download and synchronization transfer from Cloud!", "Sync Complete");
+          await showAlert("Cloud database downloaded successfully!", "Cloud Pull Sync");
         }
       } else {
-        await showAlert("The designated backup filename could not be parsed inside the requested Gist ID.", "Import Error");
+        await showAlert("The correct backup structure could not be retrieved inside the parsed Gist ID.", "Format Error");
       }
     } catch (err) {
-      await showAlert("Cloud sync load failed: " + err.message, "Sync Error");
+      await showAlert("Cloud synchronization pull failed: " + err.message, "Sync Error");
     }
   });
 
-  // Local Data Backup Actions
+  // Data Backups Local Actions
   exportBtn.onclick = () => {
     const a = document.createElement("a");
     const backupObj = { launcherLinks, launcherCategories, launcherSettings };
@@ -610,15 +538,13 @@
           launcherSettings = data.launcherSettings || launcherSettings;
           saveAll();
           sanitizeAndRender();
-          await showAlert("Data successfully imported!", "Import Complete");
         } else if (Array.isArray(data)) {
           launcherLinks = data;
           saveAll();
           sanitizeAndRender();
-          await showAlert("Data successfully imported!", "Import Complete");
         }
       } catch (err) {
-        await showAlert('Failed parsing the imported configuration file.', "Format Error");
+        await showAlert("Failed parsing the configuration structure of the uploaded import file.", "Import Failed");
       }
     };
     if (e.target.files[0]) reader.readAsText(e.target.files[0]);
@@ -626,8 +552,8 @@
   };
 
   resetBtn.onclick = async () => {
-    const confirmReset = await showConfirm("Reset layout? Local modifications will clear back to factory installation configurations.", "Reset Configurations");
-    if (confirmReset) {
+    const confirmed = await showConfirm("Reset application layouts? Local configurations will revert to default settings.", "Reset Layout");
+    if (confirmed) {
       if (storageAPI) {
         storageAPI.clear(() => window.location.reload());
       } else {
@@ -637,7 +563,7 @@
     }
   };
 
-  // Shortcut Dialog Popup Box Manager
+  // Create Shortcut Dialog Popup
   function openModal(edit = false) {
     popupBox.style.display = "flex";
     if (edit && editingIndex !== null) {
@@ -668,7 +594,10 @@
     const iconUrl = linkIconUrlInput.value.trim();
     let url = linkUrlInput.value.trim();
 
-    if (!name || !url) return showAlert("Name and target URL coordinates are required.", "Required Fields");
+    if (!name || !url) {
+      await showAlert("Both shortcut Name and web target URL are required parameters.", "Error");
+      return;
+    }
     url = /^https?:\/\//i.test(url) ? url : "https://" + url;
 
     const commitShortcut = (iconData = null) => {
@@ -698,7 +627,10 @@
 
     const iconFile = linkIconFileInput.files[0];
     if (iconFile) {
-      if (iconFile.size > 50000) return showAlert("Uploaded image too large. Please select file <= 50KB to preserve memory parameters.", "File Limit Error");
+      if (iconFile.size > 50000) {
+        await showAlert("Uploaded image size exceeds limits. Please select a file <= 50KB to preserve memory allocations.", "File Limit");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = e => commitShortcut(e.target.result);
       reader.readAsDataURL(iconFile);
@@ -707,15 +639,15 @@
     }
   });
 
-  // Top Suggested Sites API Integration Control
+  // Top Suggested Sites API Dialog Control
   suggestedBtn.addEventListener("click", () => {
     suggestedDialog.style.display = 'flex';
-    topSitesList.innerHTML = "Retrieving system logs...";
+    topSitesList.innerHTML = "Retrieving browser index logs...";
     if (extAPI && extAPI.topSites) {
       extAPI.topSites.get(sites => {
         topSitesList.innerHTML = "";
         if (!sites || sites.length === 0) {
-          topSitesList.innerHTML = "<p>No browsing suggestions retrieved from the browser profile.</p>";
+          topSitesList.innerHTML = "<p>No active standard browser browsing logs found in your local user profile.</p>";
           return;
         }
         sites.slice(0, 15).forEach(site => {
@@ -723,7 +655,7 @@
           item.className = "topSiteItem";
           item.innerHTML = `
             <div class="topSiteInfo">
-              <span class="topSiteTitle">${site.title || "Unknown Page"}</span>
+              <span class="topSiteTitle">${site.title || "Untitled Location"}</span>
               <span class="topSiteUrl">${site.url}</span>
             </div>
             <button class="addTopSiteBtn" title="Add to Launcher">+</button>
@@ -748,20 +680,22 @@
         });
       });
     } else {
-<<<<<<< Updated upstream
-      topSitesList.innerHTML = "<p>Standard Chrome TopSites API interface is not accessible outside active browser environments.</p>";
-=======
-      topSitesList.innerHTML = "<p>The standard browser Top Sites API is not accessible outside of extensions. Install the packed build to access profile metrics.</p>";
->>>>>>> Stashed changes
+      topSitesList.innerHTML = "<p>Standard web API is active. To enable top-site integration, please install App Launcher Lite as a dedicated extension.</p>";
     }
   });
   suggestedCloseBtn.addEventListener('click', () => suggestedDialog.style.display = 'none');
 
-  // Input Events (Debounced search bar initialization)
-  searchBar.addEventListener('input', debounce(renderGrid, 120));
-  sortSelect.addEventListener('change', renderGrid);
+  // Input Events & Debouncing Performance Boost
+  function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
 
-  // Theme Toggler Initialization
+  searchBar.addEventListener('input', debounce(renderGrid, 120));
+
   themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('darkTheme');
     localStorage.setItem('theme', document.body.classList.contains('darkTheme') ? 'dark' : 'light');
@@ -769,7 +703,9 @@
   if (localStorage.getItem('theme') === 'dark') document.body.classList.add('darkTheme');
   addBtn.onclick = () => openModal(false);
 
-  // Global Hotkey Interceptors
+  sortSelect.addEventListener('change', renderGrid);
+
+  // Global Key Interceptors
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey && e.key === 'f') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
       e.preventDefault();
@@ -782,6 +718,63 @@
       infoPanel.classList.remove("open");
     }
   });
+
+  // Asynchronous Custom Modal Overlay Controller (Prompts, Alerts, Confirms)
+  function _showModal(title, msg, options = { showCancel: true, okText: "OK", cancelText: "Cancel" }) {
+    return new Promise(resolve => {
+      if (!_modal.backdrop) {
+        resolve(window.confirm(msg));
+        return;
+      }
+
+      function cleanup() {
+        _modal.okBtn.removeEventListener("click", onOk);
+        _modal.cancelBtn.removeEventListener("click", onCancel);
+        document.removeEventListener("keydown", onKeyDown);
+        _modal.backdrop.classList.add("hidden");
+        _modal.backdrop.setAttribute("aria-hidden", "true");
+        _modal.visible = false;
+      }
+
+      function onOk() {
+        cleanup();
+        resolve(true);
+      }
+
+      function onCancel() {
+        cleanup();
+        resolve(false);
+      }
+
+      function onKeyDown(e) {
+        if (e.key === "Escape") onCancel();
+        if (e.key === "Enter" && document.activeElement !== _modal.cancelBtn) onOk();
+      }
+
+      _modal.titleEl.textContent = title || "";
+      _modal.msgEl.innerHTML = msg || "";
+      _modal.okBtn.textContent = options.okText || "OK";
+      _modal.cancelBtn.textContent = options.cancelText || "Cancel";
+      _modal.cancelBtn.style.display = options.showCancel ? "" : "none";
+
+      _modal.backdrop.classList.remove("hidden");
+      _modal.backdrop.setAttribute("aria-hidden", "false");
+      _modal.visible = true;
+      _modal.okBtn.focus();
+
+      _modal.okBtn.addEventListener("click", onOk);
+      _modal.cancelBtn.addEventListener("click", onCancel);
+      document.addEventListener("keydown", onKeyDown);
+    });
+  }
+
+  function showConfirm(msg, title = "Confirm") {
+    return _showModal(title, msg, { showCancel: true, okText: "Yes", cancelText: "No" });
+  }
+
+  function showAlert(msg, title = "Alert") {
+    return _showModal(title, msg, { showCancel: false, okText: "OK" });
+  }
 
   loadAll();
 })();

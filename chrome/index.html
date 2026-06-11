@@ -2,23 +2,14 @@
 <html lang="en">
 
 <head>
-<<<<<<< Updated upstream
-  <meta charset="UTF-8">
-  <title>App Launcher Lite</title>
-=======
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chrome App Launcher Lite</title>
->>>>>>> Stashed changes
   <link rel="stylesheet" href="index.css">
   <link rel="shortcut icon" href="icons/32.png" type="image/x-icon">
 </head>
 
-<<<<<<< Updated upstream
-<body>
-=======
 <body id="bodyWidth">
->>>>>>> Stashed changes
   <!-- Header Area -->
   <div class="calHeader">
     <input title="Type To Search" type="text" id="calSearchBar" placeholder="Search...">
@@ -88,8 +79,8 @@
 
   <!-- Suggested Sites Modal -->
   <div id="calSuggestedDialog" class="infoDialog" style="display: none;">
-    <div class="infoDialogContent">
-      <h2 class="infoDialogHeading">Top Visited Sites</h2>
+    <div class="SuggestedDialogContent">
+      <h2 class="SuggestedDialogHeading">Top Visited Sites</h2>
       <div title="Top Suggested Sites" id="calTopSitesList" class="calTopSitesList"></div>
       <button title="Close" id="calSuggestedCloseBtn">Close</button>
     </div>
@@ -105,12 +96,6 @@
       <!-- Section 1: Categories Manager -->
       <div class="settingsSection">
         <h3>Manage Tab Categories</h3>
-<<<<<<< Updated upstream
-        <div class="category-manager-input">
-          <input type="text" id="cal-new-category-input" placeholder="New Category...">
-          <button id="cal-add-category-btn">Add</button>
-          <div id="cal-categories-list" class="settings-list"></div>
-=======
         <div class="categoryManagerInput">
           <div class="categoryManagerInputSection">
             <input type="text" id="calNewCategoryInput" placeholder="New Category...">
@@ -118,23 +103,15 @@
           </div>
 
           <div id="calCategoriesList" class="settingsList"></div>
->>>>>>> Stashed changes
         </div>
       </div>
 
       <!-- Section 2: Layout / Appearance Settings -->
       <div class="settingsSection">
         <h3>Appearance</h3>
-<<<<<<< Updated upstream
-        <div class="settings-row">
-          <label for="cal-shape-select">Icon Shape:</label>
-          <select id="cal-shape-select">
-            <option value="rounded">Rounded Square</option>
-=======
         <div class="settingsRow">
           <label for="calShapeSelect">Icon Shape:</label>
           <select id="calShapeSelect">
->>>>>>> Stashed changes
             <option value="circle">Circle</option>
             <option value="square">Square</option>
           </select>
@@ -178,58 +155,65 @@
       <button class="sidePanelClose" id="calInfoCloseBtn">&times;</button>
     </div>
     <div class="sidePanelContent appInfoContent">
-      <h2><strong>Chrome App Launcher</strong></h2>
-<<<<<<< Updated upstream
-      <h3><strong>Version:</strong> 6.0</h3>
-      <p>A high-performance shortcut launcher optimized for smooth cross-browser experiences.</p>
+      <h2><strong>App Launcher Lite</strong></h2>
+      <h3><strong>Version:</strong> 9.0</h3>
+      <p>A minimalist workspace companion designed to catalog and launch resources across standard browsers.</p>
 
-      <h4>Key Features Implemented:</h4>
-=======
-      <h3><strong>Version:</strong> 9.5</h3>
-      <p>A shortcut management launcher optimized for quick navigation and layout customization in browser environments.</p>
-
-      <h4>Quick Hotkeys & Commands:</h4>
->>>>>>> Stashed changes
+      <h4>Key Features:</h4>
       <ul>
-        <li><strong>Focus Search:</strong> Press <code>/</code> or <code>Ctrl + F</code> while the launcher is open.</li>
-        <li><strong>Close Active UI:</strong> Press <code>Escape</code> to immediately hide modal windows, context menus, or sliding panels.</li>
-        <li><strong>Context Menu:</strong> Right-click or click the <code>⋮</code> icon on any card to show options.</li>
+        <li><strong>Cloud Backup:</strong> Gist API integration for multi-device sync.</li>
+        <li><strong>Fast Access:</strong> Context-aware action controls and deep sorting indices.</li>
+        <li><strong>Dynamic Taxonomy:</strong> Automatic grouping based on assignable categories.</li>
+        <li><strong>Portability:</strong> Standardized JSON export and import procedures.</li>
+        <li><strong>Aesthetic Control:</strong> Choice of classic circular or sharp square container profiles.</li>
       </ul>
-<<<<<<< Updated upstream
-    </div>
-  </div>
 
-  <script src="index.js"></script>
-=======
       <hr>
-      <h4>Usage Guide & Documentation:</h4>
+
+      <h4>Keyboard Shortcuts:</h4>
+      <ul>
+        <li><kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>F</kbd>: Shift focus directly to the Search bar.</li>
+        <li><kbd>Escape</kbd>: Close active popup overlays, drawers, and dialogue confirmations.</li>
+        <li><kbd>Enter</kbd>: Execute operations inside modals without manual mouse clicks.</li>
+      </ul>
+
+      <hr>
+
+      <h4>Interactive Usage Guide:</h4>
+      
       <details>
-        <summary>How do I add new shortcuts?</summary>
-        <p>Click the "Add" button on the bottom controls bar to write values manually. Alternatively, drag and drop any URL string from another window or address bar directly onto the central link grid to display the shortcut screen prepopulated with those parameters.</p>
+        <summary>How do I add a new shortcut?</summary>
+        <p>Click the <strong>Add</strong> button on the bottom control bar to define a title, target URL, category, and optional custom image. Alternatively, drag any link from another window or address bar and drop it directly onto the grid space to activate quick ingestion.</p>
       </details>
+
       <details>
-        <summary>How do I edit or delete a card?</summary>
-        <p>Right-click (or select the vertical three-dot icon in the corner of a card) to toggle the options menu. From there you can edit the properties, pin/unpin cards to keep them anchored at the top, or delete them permanently.</p>
+        <summary>How do I manage existing cards?</summary>
+        <p>Right-click a card, or click the three-dot action button (<strong>⋮</strong>) in the corner of a card. This opens a context menu allowing you to edit values, remove the node, pin it to the top of the tab, or navigate (via standard tabs, new tabs, or incognito mode).</p>
       </details>
+
       <details>
-        <summary>How do dynamic category tabs work?</summary>
-        <p>Assign a category name when creating or editing a shortcut (such as "Work", "Social", "Dev"). The application dynamically parses active entries and populates the tab bar. Shortcuts lacking a category automatically default to "General".</p>
+        <summary>How do category tabs structure themselves?</summary>
+        <p>Assign a category label (e.g., "Work", "Dev", "Social") inside the card configuration. The interface automatically renders active header tabs. Unassigned items default to <strong>General</strong>, while the <strong>All</strong> tab collects your entire dataset.</p>
       </details>
+
       <details>
-        <summary>How do I configure Cloud Sync?</summary>
-        <p>Generate a Personal Access Token (classic) with <code>gist</code> permissions in your GitHub Developer Settings, then paste it under Settings. Click <strong>Push</strong> to sync your current layout to GitHub. On other systems, paste your GitHub Token and Gist ID, and click <strong>Pull</strong> to download your workspace configuration.</p>
+        <summary>How do I configure Cloud Gist Sync?</summary>
+        <p>Generate a Personal Access Token (PAT) with <code>gist</code> permission scope inside your GitHub profile settings. Paste it under settings, and click <strong>Push</strong>. This generates a private gist, outputting a Gist ID. Save both credentials to pull your launcher data on other devices.</p>
       </details>
+
       <details>
-        <summary>How do I custom-upload or change icons?</summary>
-        <p>You can supply an explicit remote URL or upload local image files (under 50KB to respect storage quotas) during the shortcut creation phase. If left blank, the launcher sequentially queries Google and DuckDuckGo favicon servers, saving resolved icons to memory. If none exist, it generates a fallback container using the page initials.</p>
+        <summary>How do local backup files work?</summary>
+        <p>Use the <strong>Export</strong> utility under Settings to download a local JSON snapshot of your launcher. You can restore this exact layout at any time using the <strong>Import</strong> utility to load the backup file.</p>
       </details>
+
       <details>
-        <summary>Where is my personal data stored?</summary>
-        <p>All information, metadata, and token values are kept locally inside the browser profile sandboxed environment using synchronized storage APIs. Data is never broadcast to unauthorized third-party servers. Your Cloud Sync backups are managed exclusively inside your self-owned private GitHub account.</p>
+        <summary>What are the custom image limits?</summary>
+        <p>You can paste an external image URL or upload a local image file. Uploaded files must not exceed 50KB to respect storage limits and keep launcher performance snappy.</p>
       </details>
+
       <details>
-        <summary>How does backup portability work?</summary>
-        <p>Under Settings, click <strong>Export</strong> to download a text representation of your configuration as a <code>.json</code> file. To recover data elsewhere, click <strong>Import</strong> and upload that file. Use <strong>Reset Layout</strong> to instantly scrub local caches and restore original defaults.</p>
+        <summary>Why are some card favicons missing?</summary>
+        <p>The launcher requests favicons using secure proxy pathways (Google and DuckDuckGo API engines). If target servers block proxy requests, the launcher generates fallback initials based on the first characters of the shortcut name.</p>
       </details>
     </div>
   </div>
@@ -250,9 +234,7 @@
 
   <script src="index.js"></script>
   <!-- MegaMind Solutions Toaster Library -->
->>>>>>> Stashed changes
   <script src="toaster.js"></script>
-  <script type="module" src="init.js"></script>
 </body>
 
 </html>

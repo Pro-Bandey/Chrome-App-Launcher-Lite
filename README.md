@@ -1,81 +1,64 @@
-# 🚀 Chrome App Launcher Lite
+Here is the updated `README.md` reflecting the new capabilities, the clean camelCase code architecture, performance improvements, and interface updates.
 
-On FireFox or Other Browsers It Called **Browser App Launcher Lite**
+---
 
-A lightweight, customizable Extension that lets you create and manage website shortcuts — similar to a mini app launcher.
+# 🚀Chrome App Launcher Lite
 
-Chrome App Launcher Lite allows you to:
+A minimalist, highly performant browser extension designed to catalog, organize, and launch your daily web shortcuts through a clean, sharp-cornered interface.
 
-- Quickly access your favorite websites
-- Add, edit, and delete shortcuts
-- Open links in current tab, new tab, or incognito
-- Automatically fetch favicons
-- Export and import your launcher configuration
+Optimized for seamless cross-browser performance (Chrome, Firefox, Edge, and other Chromium-based platforms), this workspace companion lets you build a personalized hub of deep-linked shortcuts.
 
 ---
 
 ## ✨ Features
 
-### 📦 Default App Collection
+### 🎨 Minimalist Sharp-Cornered UI & Customizations
 
-Preloaded with popular platforms including:
+- **Sharp Aesthetic:** Designed with clean, crisp edges (no default border radii) to preserve a unique structured layout.
+- **Icon Shape Adaptability:** Toggle shortcut containers dynamically between **Sharp Square** or **Classic Circle** profiles under the settings panel.
+- **Unified Theme Integration:** Full support for dark and light theme controls that propagate automatically across all views, drawers, and modal boxes.
 
-- **Google Services** – Google, Gmail, Google Drive, Google Docs, YouTube
-- **Social Media** – Facebook, Instagram, LinkedIn, Reddit
-- **AI & Development** – OpenAI (ChatGPT), GitHub, Stack Overflow
-- **Productivity & Tools** – Notion, Trello, Slack
+### 📁 Dynamic Categories & Tab Taxonomy
 
-You can fully customize this list.
+- **Responsive Category Bar:** Automatically structures interactive tab elements based on the categories assigned to your shortcuts.
+- **Unassigned Organization:** Shortcuts lacking a label automatically route to the **General** tab, while the **All** tab maps your complete catalog.
+- **Category Manager:** Add new categories or delete obsolete ones from the settings sidebar. Deleting a category gracefully returns its active shortcuts back to the "General" index without data loss.
 
----
+### ⚡ Performance & Engine Optimizations
 
-### 🎨 Smart Icon System
+- **DocumentFragment Rendering:** Minimizes expensive DOM reflows and browser layout processes, ensuring rapid load times even with massive collections.
+- **Debounced Filtering:** The dynamic lookup search utilizes an input debounce interval to prevent rapid, repetitive database queries during typing.
+- **Favicon Cache Layer:** Resolves external site icons through public proxies (Google and DuckDuckGo API engines) and caches them directly into your database. Once loaded, cached icon states serve instantly without relying on active network fetching.
 
-- Automatically loads website favicons from:
-  - Google Favicon Service
-  - DuckDuckGo Icons
-  - Clearbit Logos
+### ☁️ Cloud Sync & Data Portability
 
-- If favicon fails → generates:
-  - A dynamic colored background
-  - A smart fallback text icon (e.g., "GH" for GitHub)
+- **GitHub Gist Synchronization:** Back up and synchronize your layout across multiple browsers using private GitHub Gists. Configure Gist Cloud access securely via a Personal Access Token (PAT) and pull/push data instantly.
+- **JSON Import/Export Engine:** Download your localized configuration snapshot as a structured JSON backup (`launcherSettingsBackup.json`) or restore from one at any time.
 
----
+### 🖱 Context Menu & Custom Dialogue Overlays
 
-### 🖱 Context Menu Actions
+- **Context Actions:** Right-click a card or interact with its menu button (⋮) to launch inside your active tab, open in a new tab, open in a private incognito window, pin to the top of the category list, edit properties, or delete.
+- **Asynchronous Overlays:** Replaces native browser confirmation alerts with customized, asynchronous modal dialogue overlays. These modules support keyboard accessibility (`Enter` to confirm, `Escape` to close) and adhere to the strict sharp-cornered theme.
 
-Right-click or use the menu button (⋮) on any shortcut:
+### 📥 External Drag-and-Drop Ingestion
 
-- Open in current tab
-- Open in new tab
-- Open in incognito window
-- Edit shortcut
-- Delete shortcut (with confirmation dialog)
+- **Direct Drop Ingestion:** Drag any URL from an external app or your browser address bar and drop it directly onto the shortcut grid. The launcher parses the link metadata and launches the edit drawer pre-filled.
+- _Note: Internal card drag reordering has been removed to maximize DOM rendering speeds and system efficiency._
 
 ---
 
-### ➕ Add / Edit Shortcuts
+## ⌨️ Global Keyboard Shortcuts
 
-- Validates URL format
-- Automatically adds `https://` if missing
-- Restricts to `http/https` protocols only
-- Generates fallback initials automatically
+To streamline your workflow, the following key bindings are active globally across the interface:
 
----
-
-### 📁 Import / Export
-
-- Export shortcuts as `launcherLinks.json`
-- Import your saved configuration anytime
-- Perfect for backup or transferring between browsers
+- <kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>F</kbd> — Shift focus directly to the Search input.
+- <kbd>Escape</kbd> — Gracefully dismiss active settings, info panels, popup modules, or suggested sites overlays.
+- <kbd>Enter</kbd> — Submit form variables or confirm choice inside alert overlays.
 
 ---
 
-## 🔒 Security Considerations
+## 🔒 Security & Standards
 
-- URL validation using `new URL()`
-- Restricts to `http` and `https`
-- No inline external scripts
-- Controlled incognito window creation
-
----
+- **Protocol Enforcement:** Form validations sanitize coordinates to enforce safe web standard protocols (`http://` and `https://` only).
+- **Zero Inline Execution:** Eliminates external script dependencies to ensure safe sandbox executions.
+- **Personal Data Sovereignty:** Synchronization keys and Personal Access Tokens are localized inside your chosen extension workspace container (or `localStorage` fallback context) in plaintext, ensuring data remains inside your administrative control.
