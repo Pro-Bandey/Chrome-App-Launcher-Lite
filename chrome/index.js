@@ -2,7 +2,6 @@
   const extAPI = (typeof chrome !== "undefined" && chrome.runtime) ? chrome : ((typeof browser !== "undefined" && browser.runtime) ? browser : null);
   const storageAPI = extAPI && extAPI.storage ? (extAPI.storage.sync || extAPI.storage.local) : null;
 
-  // App States
   let launcherLinks = [];
   let launcherCategories = [];
   let launcherSettings = { iconShape: "square", ghToken: "", gistId: "" };
@@ -11,14 +10,15 @@
   let editingIndex = null;
   let activeCategoryTab = "All";
 
-  // Elements
+  let keyboardFocusedIndex = -1;
+  let activeCardNodes = [];
+
   const grid = document.getElementById("calLinkGrid");
   const contextMenu = document.getElementById("calContextMenu");
   const searchBar = document.getElementById("calSearchBar");
   const sortSelect = document.getElementById("calSortSelect");
   const themeToggle = document.getElementById("calThemeToggle");
 
-  // Side Panels & Buttons
   const settingsPanel = document.getElementById("calSettingsPanel");
   const settingsBtn = document.getElementById("calSettingsBtn");
   const settingsCloseBtn = document.getElementById("calSettingsCloseBtn");
@@ -27,7 +27,6 @@
   const infoBtn = document.getElementById("calInfoBtn");
   const infoCloseBtn = document.getElementById("calInfoCloseBtn");
 
-  // Popups & Modal inputs
   const addBtn = document.getElementById("calAddBtn");
   const suggestedBtn = document.getElementById("calSuggestedBtn");
   const popupBox = document.getElementById("calPopupBox");
@@ -44,7 +43,6 @@
   const topSitesList = document.getElementById("calTopSitesList");
   const suggestedCloseBtn = document.getElementById("calSuggestedCloseBtn");
 
-  // Settings Panel Inputs
   const newCatInput = document.getElementById("calNewCategoryInput");
   const addCatBtn = document.getElementById("calAddCategoryBtn");
   const shapeSelect = document.getElementById("calShapeSelect");
@@ -55,7 +53,6 @@
   const importFile = document.getElementById("calImportFile");
   const resetBtn = document.getElementById("calResetBtn");
 
-  // Custom Modal Elements Object
   const _modal = {
     backdrop: document.getElementById("confirmAndAlertBox"),
     titleEl: document.getElementById("confirmAndAlertBoxTitle"),
@@ -79,11 +76,16 @@
     });
   }
 
-  // Database Access Layer
+  let saveTimeout = null;
   function saveAll() {
+    if (saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(executeSaveAll, 120);
+  }
+
+  function executeSaveAll() {
     if (storageAPI) {
       storageAPI.set({ launcherLinks, launcherCategories, launcherSettings }, () => {
-        if (extAPI.runtime.lastError) {
+        if (extAPI && extAPI.runtime && extAPI.runtime.lastError) {
           extAPI.storage.local.set({ launcherLinks, launcherCategories, launcherSettings });
         }
       });
@@ -138,15 +140,107 @@
     return [
       { "fallback": "GS", "name": "Google Search", "url": "https://www.google.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000000 },
       { "fallback": "Bi", "name": "Bing", "url": "https://www.bing.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000001 },
-      { "fallback": "GML", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico", "clicks": 0, "dateAdded": 1717000000002 },
-      { "fallback": "X", "name": "X (Twitter)", "url": "https://x.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000003 },
-      { "fallback": "GPT", "name": "ChatGPT", "url": "https://chat.openai.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000004 },
-      { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000005 },
-      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000006 }
+      { "fallback": "YH", "name": "Yahoo", "url": "https://www.yahoo.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000002 },
+      { "fallback": "DDG", "name": "DuckDuckGo", "url": "https://duckduckgo.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000003 },
+      { "fallback": "EC", "name": "Ecosia", "url": "https://www.ecosia.org", "category": "Search", "clicks": 0, "dateAdded": 1717000000004 },
+      { "fallback": "BD", "name": "Baidu", "url": "https://www.baidu.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000005 },
+      { "fallback": "YD", "name": "Yandex", "url": "https://yandex.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000006 },
+      { "fallback": "SP", "name": "Startpage", "url": "https://www.startpage.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000007 },
+      { "fallback": "BR", "name": "Brave Search", "url": "https://search.brave.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000008 },
+      { "fallback": "QW", "name": "Qwant", "url": "https://www.qwant.com", "category": "Search", "clicks": 0, "dateAdded": 1717000000009 },
+      { "fallback": "ST", "name": "Speedtest", "url": "https://www.speedtest.net", "category": "Tools", "clicks": 0, "dateAdded": 1717000000010 },
+      { "fallback": "CNV", "name": "Canva", "url": "https://www.canva.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000011 },
+      { "fallback": "TP", "name": "TinyPNG", "url": "https://tinypng.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000012 },
+      { "fallback": "RM", "name": "Remove.bg", "url": "https://www.remove.bg", "category": "Tools", "clicks": 0, "dateAdded": 1717000000013 },
+      { "fallback": "CV", "name": "Convertio", "url": "https://convertio.co", "category": "Tools", "clicks": 0, "dateAdded": 1717000000014 },
+      { "fallback": "VT", "name": "VirusTotal", "url": "https://www.virustotal.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000015 },
+      { "fallback": "US", "name": "Unsplash", "url": "https://unsplash.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000016 },
+      { "fallback": "PX", "name": "Pixabay", "url": "https://pixabay.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000017 },
+      { "fallback": "WM", "name": "Wayback Machine", "url": "https://archive.org/web/", "category": "Tools", "clicks": 0, "dateAdded": 1717000000018 },
+      { "fallback": "FG", "name": "Figma", "url": "https://www.figma.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000019 },
+      { "fallback": "QB", "name": "QuillBot", "url": "https://quillbot.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000020 },
+      { "fallback": "P2G", "name": "PDF2Go", "url": "https://www.pdf2go.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000021 },
+      { "fallback": "GML", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico", "clicks": 0, "dateAdded": 1717000000022 },
+      { "fallback": "CAL", "name": "Google Calendar", "url": "https://calendar.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000023 },
+      { "fallback": "DRV", "name": "Google Drive", "url": "https://drive.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000024 },
+      { "fallback": "SHT", "name": "Google Sheets", "url": "https://docs.google.com/spreadsheets", "category": "Work", "clicks": 0, "dateAdded": 1717000000025 },
+      { "fallback": "DOC", "name": "Google Docs", "url": "https://docs.google.com/document", "category": "Work", "clicks": 0, "dateAdded": 1717000000026 },
+      { "fallback": "M36", "name": "Microsoft 365", "url": "https://www.office.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000027 },
+      { "fallback": "ZM", "name": "Zoom", "url": "https://zoom.us", "category": "Work", "clicks": 0, "dateAdded": 1717000000028 },
+      { "fallback": "OUT", "name": "Outlook", "url": "https://outlook.live.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000029 },
+      { "fallback": "SL", "name": "Slack", "url": "https://slack.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000030 },
+      { "fallback": "DB", "name": "Dropbox", "url": "https://www.dropbox.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000031 },
+      { "fallback": "NT", "name": "Notion", "url": "https://www.notion.so", "category": "Work", "clicks": 0, "dateAdded": 1717000000032 },
+      { "fallback": "JR", "name": "Jira", "url": "https://www.atlassian.com/software/jira", "category": "Work", "clicks": 0, "dateAdded": 1717000000033 },
+      { "fallback": "X", "name": "X (Twitter)", "url": "https://x.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000034 },
+      { "fallback": "FB", "name": "Facebook", "url": "https://www.facebook.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000035 },
+      { "fallback": "IG", "name": "Instagram", "url": "https://www.instagram.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000036 },
+      { "fallback": "LN", "name": "LinkedIn", "url": "https://www.linkedin.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000037 },
+      { "fallback": "RD", "name": "Reddit", "url": "https://www.reddit.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000038 },
+      { "fallback": "PIN", "name": "Pinterest", "url": "https://www.pinterest.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000039 },
+      { "fallback": "TT", "name": "TikTok", "url": "https://www.tiktok.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000040 },
+      { "fallback": "THR", "name": "Threads", "url": "https://www.threads.net", "category": "Social", "clicks": 0, "dateAdded": 1717000000041 },
+      { "fallback": "DC", "name": "Discord", "url": "https://discord.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000042 },
+      { "fallback": "TG", "name": "Telegram", "url": "https://web.telegram.org", "category": "Social", "clicks": 0, "dateAdded": 1717000000043 },
+      { "fallback": "WA", "name": "WhatsApp Web", "url": "https://web.whatsapp.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000044 },
+      { "fallback": "MD", "name": "Mastodon", "url": "https://mastodon.social", "category": "Social", "clicks": 0, "dateAdded": 1717000000045 },
+      { "fallback": "GPT", "name": "ChatGPT", "url": "https://chat.openai.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000046 },
+      { "fallback": "CLD", "name": "Claude", "url": "https://claude.ai", "category": "AI", "clicks": 0, "dateAdded": 1717000000047 },
+      { "fallback": "GEM", "name": "Gemini", "url": "https://gemini.google.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000048 },
+      { "fallback": "MJ", "name": "Midjourney", "url": "https://www.midjourney.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000049 },
+      { "fallback": "HF", "name": "Hugging Face", "url": "https://huggingface.co", "category": "AI", "clicks": 0, "dateAdded": 1717000000050 },
+      { "fallback": "PPX", "name": "Perplexity", "url": "https://www.perplexity.ai", "category": "AI", "clicks": 0, "dateAdded": 1717000000051 },
+      { "fallback": "DL", "name": "DeepL", "url": "https://www.deepl.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000052 },
+      { "fallback": "GR", "name": "Grammarly", "url": "https://www.grammarly.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000053 },
+      { "fallback": "POE", "name": "Poe", "url": "https://poe.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000054 },
+      { "fallback": "COP", "name": "Copilot", "url": "https://copilot.microsoft.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000055 },
+      { "fallback": "RW", "name": "RunwayML", "url": "https://runwayml.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000056 },
+      { "fallback": "PH", "name": "Phind", "url": "https://www.phind.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000057 },
+      { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000058 },
+      { "fallback": "GL", "name": "GitLab", "url": "https://gitlab.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000059 },
+      { "fallback": "BB", "name": "Bitbucket", "url": "https://bitbucket.org", "category": "Dev", "clicks": 0, "dateAdded": 1717000000060 },
+      { "fallback": "SO", "name": "Stack Overflow", "url": "https://stackoverflow.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000061 },
+      { "fallback": "MDN", "name": "MDN Web Docs", "url": "https://developer.mozilla.org", "category": "Dev", "clicks": 0, "dateAdded": 1717000000062 },
+      { "fallback": "CP", "name": "CodePen", "url": "https://codepen.io", "category": "Dev", "clicks": 0, "dateAdded": 1717000000063 },
+      { "fallback": "JSF", "name": "JSFiddle", "url": "https://jsfiddle.net", "category": "Dev", "clicks": 0, "dateAdded": 1717000000064 },
+      { "fallback": "VR", "name": "Vercel", "url": "https://vercel.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000065 },
+      { "fallback": "NL", "name": "Netlify", "url": "https://www.netlify.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000066 },
+      { "fallback": "DH", "name": "Docker Hub", "url": "https://hub.docker.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000067 },
+      { "fallback": "NPM", "name": "npm", "url": "https://www.npmjs.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000068 },
+      { "fallback": "LC", "name": "LeetCode", "url": "https://leetcode.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000069 },
+      { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000070 },
+      { "fallback": "NFL", "name": "Netflix", "url": "https://www.netflix.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000071 },
+      { "fallback": "SF", "name": "Spotify", "url": "https://www.spotify.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000072 },
+      { "fallback": "TWC", "name": "Twitch", "url": "https://www.twitch.tv", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000073 },
+      { "fallback": "DIS", "name": "Disney+", "url": "https://www.disneyplus.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000074 },
+      { "fallback": "PV", "name": "Prime Video", "url": "https://www.primevideo.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000075 },
+      { "fallback": "IMD", "name": "IMDb", "url": "https://www.imdb.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000076 },
+      { "fallback": "SCD", "name": "SoundCloud", "url": "https://soundcloud.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000077 },
+      { "fallback": "STM", "name": "Steam", "url": "https://store.steampowered.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000078 },
+      { "fallback": "CR", "name": "Crunchyroll", "url": "https://www.crunchyroll.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000079 },
+      { "fallback": "AMZ", "name": "Amazon", "url": "https://www.amazon.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000080 },
+      { "fallback": "EBY", "name": "eBay", "url": "https://www.ebay.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000081 },
+      { "fallback": "ALI", "name": "AliExpress", "url": "https://www.aliexpress.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000082 },
+      { "fallback": "ETS", "name": "Etsy", "url": "https://www.etsy.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000083 },
+      { "fallback": "SHP", "name": "Shopify", "url": "https://www.shopify.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000084 },
+      { "fallback": "BBY", "name": "Best Buy", "url": "https://www.bestbuy.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000085 },
+      { "fallback": "TGT", "name": "Target", "url": "https://www.target.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000086 },
+      { "fallback": "WMT", "name": "Walmart", "url": "https://www.walmart.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000087 },
+      { "fallback": "APL", "name": "Apple Store", "url": "https://www.apple.com/store", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000088 },
+      { "fallback": "IKE", "name": "IKEA", "url": "https://www.ikea.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000089 },
+      { "fallback": "WK", "name": "Wikipedia", "url": "https://www.wikipedia.org", "category": "Information", "clicks": 0, "dateAdded": 1717000000090 },
+      { "fallback": "HN", "name": "Hacker News", "url": "https://news.ycombinator.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000091 },
+      { "fallback": "SE", "name": "Stack Exchange", "url": "https://stackexchange.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000092 },
+      { "fallback": "QR", "name": "Quora", "url": "https://www.quora.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000093 },
+      { "fallback": "MED", "name": "Medium", "url": "https://medium.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000094 },
+      { "fallback": "TC", "name": "TechCrunch", "url": "https://techcrunch.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000095 },
+      { "fallback": "BBC", "name": "BBC News", "url": "https://www.bbc.com/news", "category": "Information", "clicks": 0, "dateAdded": 1717000000096 },
+      { "fallback": "RT", "name": "Reuters", "url": "https://www.reuters.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000097 },
+      { "fallback": "WRD", "name": "Wired", "url": "https://www.wired.com", "category": "Information", "clicks": 0, "dateAdded": 1717000000098 },
+      { "fallback": "DVT", "name": "Dev.to", "url": "https://dev.to", "category": "Information", "clicks": 0, "dateAdded": 1717000000099 }
     ];
   }
 
-  // Dynamic Tabs Controller
   function renderTabs() {
     const tabsContainer = document.getElementById("calTabsContainer");
     tabsContainer.innerHTML = "";
@@ -158,6 +252,8 @@
       const btn = document.createElement("button");
       btn.className = "categoryTab" + (activeCategoryTab === cat ? " active" : "");
       btn.innerText = cat;
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", activeCategoryTab === cat ? "true" : "false");
       btn.addEventListener("click", () => {
         activeCategoryTab = cat;
         renderTabs();
@@ -172,7 +268,6 @@
     });
   }
 
-  // Unified Multi-Sort Filter Grid System using DocumentFragment
   function renderGrid() {
     grid.innerHTML = "";
     const searchTerm = searchBar.value.toLowerCase();
@@ -222,6 +317,8 @@
       const card = document.createElement("a");
       card.className = "card";
       card.href = link.url;
+      card.tabIndex = 0;
+      card.setAttribute("role", "gridcell");
       if (link.isPinned) card.classList.add("pinned");
       card.title = `${link.name}` + (link.category ? ` (${link.category})` : "") + ` | Visited: ${link.clicks || 0}`;
       card.dataset.index = idx;
@@ -247,11 +344,19 @@
         showContextMenu(e.pageX, e.pageY);
       });
 
+      card.addEventListener("focus", () => {
+        keyboardFocusedIndex = activeCardNodes.indexOf(card);
+        updateKeyboardFocusState();
+      });
+
       fragment.appendChild(card);
       loadFavicon(card, link, fallback);
     });
 
     grid.appendChild(fragment);
+
+    activeCardNodes = Array.from(grid.querySelectorAll('.card'));
+    keyboardFocusedIndex = -1;
   }
 
   function openLink(index, newTab = false) {
@@ -277,7 +382,7 @@
   function openIncognito(index) {
     const url = launcherLinks[index].url;
     if (extAPI && extAPI.windows) extAPI.windows.create({ url: url, incognito: true });
-    else showAlert("Incognito option is unavailable in the current workspace.", "System Warning");
+    else showAlert("Incognito navigation is unavailable in the current workspace.", "System Warning");
   }
 
   function generateFallback(name) {
@@ -291,7 +396,6 @@
     return `hsl(${h},${s}%,${l}%)`;
   }
 
-  // Favicon Loader Engine with Runtime Caching
   function loadFavicon(card, link, fallback) {
     const icon = card.querySelector(".icon");
     if (link.icon) {
@@ -301,15 +405,26 @@
     }
     try {
       const hostname = new URL(link.url).hostname;
-      const sources = [
-        e => `https://www.google.com/s2/favicons?sz=64&domain=${e}`,
-        e => `https://icons.duckduckgo.com/ip2/${e}.ico`
-      ];
+      const sources = [];
+
+      if (extAPI && extAPI.runtime && extAPI.runtime.id) {
+        sources.push(() => `chrome-extension://${extAPI.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(link.url)}&size=64`);
+      }
+
+      sources.push(() => `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`);
+      sources.push(() => `https://icons.duckduckgo.com/ip2/${hostname}.ico`);
+
       let i = 0;
       function tryNext() {
         if (i >= sources.length) return;
         const img = document.createElement("img");
-        img.src = sources[i](hostname);
+        try {
+          img.src = sources[i]();
+        } catch (err) {
+          i++;
+          tryNext();
+          return;
+        }
         img.onload = () => {
           icon.innerHTML = "";
           icon.style.background = "transparent";
@@ -323,7 +438,6 @@
     } catch (e) { }
   }
 
-  // Drag and Drop (External Link Drops Only - Internal Sorting Disabled)
   grid.addEventListener('dragover', e => {
     e.preventDefault();
   });
@@ -352,7 +466,6 @@
     linkCategoryInput.value = (activeCategoryTab === "All" || activeCategoryTab === "General") ? "" : activeCategoryTab;
   }
 
-  // Context Menu Controls
   function showContextMenu(x, y) {
     contextMenu.style.display = "flex";
     if (x + contextMenu.offsetWidth > window.innerWidth) x = window.innerWidth - contextMenu.offsetWidth - 5;
@@ -362,7 +475,7 @@
   }
 
   document.addEventListener("click", () => { contextMenu.style.display = "none"; });
-  contextMenu.addEventListener("click", e => {
+  contextMenu.addEventListener("click", async e => {
     if (currentIndex === null) return;
     const action = e.target.dataset.action;
     if (action === "calOpen") openLink(currentIndex, false);
@@ -375,21 +488,21 @@
     }
     else if (action === "calEdit") { editingIndex = currentIndex; openModal(true); }
     else if (action === "calDelete") {
-      showCoconfirm('Are you');
-      launcherLinks.splice(currentIndex, 1);
-      saveAll();
-      renderGrid();
+      const confirmed = await showConfirm(`Are you sure you want to delete "${launcherLinks[currentIndex].name}"?`, "Delete Link");
+      if (confirmed) {
+        launcherLinks.splice(currentIndex, 1);
+        saveAll();
+        renderGrid();
+      }
     }
   });
 
-  // Drawer Panel Event Handlers
   settingsBtn.addEventListener("click", () => settingsPanel.classList.add("open"));
   settingsCloseBtn.addEventListener("click", () => settingsPanel.classList.remove("open"));
 
   infoBtn.addEventListener("click", () => infoPanel.classList.add("open"));
   infoCloseBtn.addEventListener("click", () => infoPanel.classList.remove("open"));
 
-  // Category Tab control manager
   addCatBtn.addEventListener("click", () => {
     const name = newCatInput.value.trim();
     if (name && !launcherCategories.includes(name)) {
@@ -399,7 +512,7 @@
       renderTabs();
       renderCategorySettingsList();
     } else {
-      showAlert('Please type or paste category name in input first');
+      showAlert('Please type a unique category name in the input field.', 'Category Management');
     }
   });
 
@@ -428,14 +541,12 @@
     }
   }
 
-  // Shape Configuration Control
   shapeSelect.addEventListener("change", () => {
     launcherSettings.iconShape = shapeSelect.value;
     saveAll();
     applySettings();
   });
 
-  // Gist Cloud Sync push/pull mechanism
   syncPushBtn.addEventListener("click", async () => {
     const token = document.getElementById("calGhToken").value.trim();
     let gistId = document.getElementById("calGistId").value.trim();
@@ -477,7 +588,7 @@
         launcherSettings.gistId = gistId;
         saveAll();
       }
-      await showAlert("Configuration successfully sent and backed up to GitHub Cloud!", "Cloud Sync");
+      await showAlert("Configuration successfully backed up to GitHub Cloud!", "Cloud Sync");
     } catch (err) {
       await showAlert("Cloud push synchronization failed: " + err.message, "Sync Error");
     }
@@ -516,7 +627,6 @@
     }
   });
 
-  // Data Backups Local Actions
   exportBtn.onclick = () => {
     const a = document.createElement("a");
     const backupObj = { launcherLinks, launcherCategories, launcherSettings };
@@ -563,7 +673,6 @@
     }
   };
 
-  // Create Shortcut Dialog Popup
   function openModal(edit = false) {
     popupBox.style.display = "flex";
     if (edit && editingIndex !== null) {
@@ -639,7 +748,6 @@
     }
   });
 
-  // Top Suggested Sites API Dialog Control
   suggestedBtn.addEventListener("click", () => {
     suggestedDialog.style.display = 'flex';
     topSitesList.innerHTML = "Retrieving browser index logs...";
@@ -685,7 +793,6 @@
   });
   suggestedCloseBtn.addEventListener('click', () => suggestedDialog.style.display = 'none');
 
-  // Input Events & Debouncing Performance Boost
   function debounce(func, delay) {
     let timeout;
     return function (...args) {
@@ -705,21 +812,166 @@
 
   sortSelect.addEventListener('change', renderGrid);
 
-  // Global Key Interceptors
-  document.addEventListener('keydown', e => {
-    if ((e.ctrlKey && e.key === 'f') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
-      e.preventDefault();
-      searchBar.focus();
+  function getGridColumns() {
+    if (activeCardNodes.length === 0) return 1;
+    const firstRect = activeCardNodes[0].getBoundingClientRect();
+    let cols = 1;
+    for (let i = 1; i < activeCardNodes.length; i++) {
+      if (activeCardNodes[i].getBoundingClientRect().top === firstRect.top) {
+        cols++;
+      } else {
+        break;
+      }
     }
+    return cols;
+  }
+
+  function updateKeyboardFocusState() {
+    activeCardNodes.forEach((node, idx) => {
+      if (idx === keyboardFocusedIndex) {
+        node.classList.add('keyboard-focused');
+        node.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        node.classList.remove('keyboard-focused');
+      }
+    });
+  }
+
+  document.addEventListener('keydown', async e => {
+    const isInputFocused = document.activeElement.tagName === 'INPUT' ||
+      document.activeElement.tagName === 'TEXTAREA' ||
+      document.activeElement.isContentEditable;
+
     if (e.key === 'Escape') {
       closeModal();
       suggestedDialog.style.display = 'none';
       settingsPanel.classList.remove("open");
       infoPanel.classList.remove("open");
+      if (contextMenu.style.display === "flex") {
+        contextMenu.style.display = "none";
+      }
+      return;
+    }
+
+    if (isInputFocused) {
+      if (e.ctrlKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        searchBar.focus();
+        searchBar.select();
+      }
+      return;
+    }
+
+    if (e.ctrlKey && e.key >= '1' && e.key <= '9') {
+      e.preventDefault();
+      const tabIndex = parseInt(e.key) - 1;
+      const allTabs = ["All", "General", ...launcherCategories];
+      if (tabIndex < allTabs.length) {
+        activeCategoryTab = allTabs[tabIndex];
+        renderTabs();
+        renderGrid();
+      }
+      return;
+    }
+
+    if (e.key === '/' || (e.ctrlKey && e.key.toLowerCase() === 'f')) {
+      e.preventDefault();
+      searchBar.focus();
+      searchBar.select();
+      return;
+    }
+
+    if (e.key === ',' || (e.ctrlKey && e.key === ',')) {
+      e.preventDefault();
+      settingsPanel.classList.toggle("open");
+      return;
+    }
+
+    if (e.key === '?') {
+      e.preventDefault();
+      infoPanel.classList.toggle("open");
+      return;
+    }
+
+    if (e.key.toLowerCase() === 'n' || (e.ctrlKey && e.key.toLowerCase() === 'i')) {
+      e.preventDefault();
+      openModal(false);
+      return;
+    }
+
+    if (activeCardNodes.length > 0) {
+      const columns = getGridColumns();
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (keyboardFocusedIndex === -1) keyboardFocusedIndex = 0;
+        else keyboardFocusedIndex = Math.min(activeCardNodes.length - 1, keyboardFocusedIndex + 1);
+        activeCardNodes[keyboardFocusedIndex].focus();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (keyboardFocusedIndex === -1) keyboardFocusedIndex = 0;
+        else keyboardFocusedIndex = Math.max(0, keyboardFocusedIndex - 1);
+        activeCardNodes[keyboardFocusedIndex].focus();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (keyboardFocusedIndex === -1) keyboardFocusedIndex = 0;
+        else keyboardFocusedIndex = Math.min(activeCardNodes.length - 1, keyboardFocusedIndex + columns);
+        activeCardNodes[keyboardFocusedIndex].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (keyboardFocusedIndex === -1) keyboardFocusedIndex = 0;
+        else keyboardFocusedIndex = Math.max(0, keyboardFocusedIndex - columns);
+        activeCardNodes[keyboardFocusedIndex].focus();
+      }
+
+      if (keyboardFocusedIndex >= 0 && keyboardFocusedIndex < activeCardNodes.length) {
+        const targetNode = activeCardNodes[keyboardFocusedIndex];
+        const globalIdx = parseInt(targetNode.dataset.index);
+
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (e.shiftKey) {
+            openLink(globalIdx, true);
+          } else if (e.ctrlKey || e.metaKey) {
+            openIncognito(globalIdx);
+          } else {
+            openLink(globalIdx, false);
+          }
+        }
+
+        if (e.key.toLowerCase() === 'p') {
+          e.preventDefault();
+          launcherLinks[globalIdx].isPinned = !launcherLinks[globalIdx].isPinned;
+          saveAll();
+          renderGrid();
+
+          const reMapIndex = activeCardNodes.findIndex(node => parseInt(node.dataset.index) === globalIdx);
+          if (reMapIndex !== -1) {
+            keyboardFocusedIndex = reMapIndex;
+            activeCardNodes[keyboardFocusedIndex].focus();
+          }
+        }
+
+        if (e.key.toLowerCase() === 'e') {
+          e.preventDefault();
+          editingIndex = globalIdx;
+          openModal(true);
+        }
+
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          e.preventDefault();
+          const confirmed = await showConfirm(`Are you sure you want to delete "${launcherLinks[globalIdx].name}"?`, "Delete Link");
+          if (confirmed) {
+            launcherLinks.splice(globalIdx, 1);
+            saveAll();
+            renderGrid();
+            keyboardFocusedIndex = -1;
+          }
+        }
+      }
     }
   });
 
-  // Asynchronous Custom Modal Overlay Controller (Prompts, Alerts, Confirms)
   function _showModal(title, msg, options = { showCancel: true, okText: "OK", cancelText: "Cancel" }) {
     return new Promise(resolve => {
       if (!_modal.backdrop) {

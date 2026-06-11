@@ -10,7 +10,6 @@
 </head>
 
 <body id="bodyWidth">
-  <!-- Header Area -->
   <div class="calHeader">
     <input title="Type To Search" type="text" id="calSearchBar" placeholder="Search...">
 
@@ -31,13 +30,9 @@
     </button>
   </div>
 
-  <!-- Dynamic Categories Tab Bar -->
-  <div class="calTabsContainer" id="calTabsContainer"></div>
+  <div class="calTabsContainer" id="calTabsContainer" role="tablist"></div>
+  <div class="calLinkGrid" id="calLinkGrid" role="grid"></div>
 
-  <!-- Shortcuts Grid -->
-  <div class="calLinkGrid" id="calLinkGrid"></div>
-
-  <!-- Base Controls Area -->
   <div id="calControls" class="calControls">
     <button title="Add New Shortcut" id="calAddBtn">Add</button>
     <button title="Top Suggested Sites" id="calSuggestedBtn">Suggested</button>
@@ -45,18 +40,16 @@
     <button title="App Info" id="calInfoBtn">Info</button>
   </div>
 
-  <!-- Right-Click Context Menu -->
-  <div id="calContextMenu" class="contextMenu">
-    <button title="Open" class="menuItem" data-action="calOpen">Open</button>
-    <button title="Open in New Tab" class="menuItem" data-action="calNewTab">Open in Tab</button>
-    <button title="Open in Incognito Tab" class="menuItem" data-action="calIncognito">Open in Incognito</button>
-    <button title="Pin/Unpin This Shortcut" class="menuItem" data-action="calPin">Pin/Unpin</button>
-    <button title="Edit This Shortcut" class="menuItem" data-action="calEdit">Edit</button>
-    <button title="Delete This Shortcut" class="menuItem" data-action="calDelete">Delete</button>
+  <div id="calContextMenu" class="contextMenu" role="menu">
+    <button title="Open" class="menuItem" data-action="calOpen" role="menuitem">Open</button>
+    <button title="Open in New Tab" class="menuItem" data-action="calNewTab" role="menuitem">Open in Tab</button>
+    <button title="Open in Incognito Tab" class="menuItem" data-action="calIncognito" role="menuitem">Open in Incognito</button>
+    <button title="Pin/Unpin This Shortcut" class="menuItem" data-action="calPin" role="menuitem">Pin/Unpin</button>
+    <button title="Edit This Shortcut" class="menuItem" data-action="calEdit" role="menuitem">Edit</button>
+    <button title="Delete This Shortcut" class="menuItem" data-action="calDelete" role="menuitem">Delete</button>
   </div>
 
-  <!-- Add/Edit Modal Box -->
-  <div class="addLinkBox" id="calPopupBox" style="display:none;">
+  <div class="addLinkBox" id="calPopupBox" style="display:none;" aria-modal="true" role="dialog">
     <div class="addLinkBoxContent">
       <h2 id="addLinkHeading">Add Shortcut</h2>
       <input title="Type Name" type="text" id="calLinkTitle" autocomplete="off" placeholder="Name" />
@@ -77,8 +70,7 @@
     </div>
   </div>
 
-  <!-- Suggested Sites Modal -->
-  <div id="calSuggestedDialog" class="infoDialog" style="display: none;">
+  <div id="calSuggestedDialog" class="infoDialog" style="display: none;" aria-modal="true" role="dialog">
     <div class="SuggestedDialogContent">
       <h2 class="SuggestedDialogHeading">Top Visited Sites</h2>
       <div title="Top Suggested Sites" id="calTopSitesList" class="calTopSitesList"></div>
@@ -86,14 +78,12 @@
     </div>
   </div>
 
-  <!-- Settings Side Panel (Sliding Drawer) -->
-  <div id="calSettingsPanel" class="sidePanel">
+  <div id="calSettingsPanel" class="sidePanel" aria-label="Settings Panel" role="region">
     <div class="sidePanelHeader">
       <h2>Settings</h2>
-      <button class="sidePanelClose" id="calSettingsCloseBtn">&times;</button>
+      <button class="sidePanelClose" id="calSettingsCloseBtn" aria-label="Close Settings">&times;</button>
     </div>
     <div class="sidePanelContent">
-      <!-- Section 1: Categories Manager -->
       <div class="settingsSection">
         <h3>Manage Tab Categories</h3>
         <div class="categoryManagerInput">
@@ -106,7 +96,6 @@
         </div>
       </div>
 
-      <!-- Section 2: Layout / Appearance Settings -->
       <div class="settingsSection">
         <h3>Appearance</h3>
         <div class="settingsRow">
@@ -118,7 +107,6 @@
         </div>
       </div>
 
-      <!-- Section 3: GitHub Gist Cloud Sync -->
       <div class="settingsSection">
         <h3>Cloud Sync (GitHub Gist)</h3>
         <div class="settingsField">
@@ -135,7 +123,6 @@
         </div>
       </div>
 
-      <!-- Section 4: Data Portability & Resets -->
       <div class="settingsSection">
         <h3>Data Backup</h3>
         <div class="settingsRow">
@@ -148,15 +135,14 @@
     </div>
   </div>
   
-  <!-- Info Side Panel (Sliding Drawer) -->
-  <div id="calInfoPanel" class="sidePanel">
+  <div id="calInfoPanel" class="sidePanel" aria-label="Information Panel" role="region">
     <div class="sidePanelHeader">
       <h2>App Information</h2>
-      <button class="sidePanelClose" id="calInfoCloseBtn">&times;</button>
+      <button class="sidePanelClose" id="calInfoCloseBtn" aria-label="Close Info">&times;</button>
     </div>
     <div class="sidePanelContent appInfoContent">
-      <h2><strong>App Launcher Lite</strong></h2>
-      <h3><strong>Version:</strong> 9.0</h3>
+      <h2><strong>Chrome App Launcher Lite</strong></h2>
+      <h3><strong>Version:</strong> 9.5</h3>
       <p>A minimalist workspace companion designed to catalog and launch resources across standard browsers.</p>
 
       <h4>Key Features:</h4>
@@ -172,9 +158,19 @@
 
       <h4>Keyboard Shortcuts:</h4>
       <ul>
-        <li><kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>F</kbd>: Shift focus directly to the Search bar.</li>
-        <li><kbd>Escape</kbd>: Close active popup overlays, drawers, and dialogue confirmations.</li>
-        <li><kbd>Enter</kbd>: Execute operations inside modals without manual mouse clicks.</li>
+        <li><kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>F</kbd>: Focus the Search bar.</li>
+        <li><kbd>Arrow Keys</kbd>: Navigate through shortcuts in the grid workspace.</li>
+        <li><kbd>Enter</kbd>: Launch selected shortcut in active tab.</li>
+        <li><kbd>Shift</kbd> + <kbd>Enter</kbd>: Launch selected shortcut in a new tab.</li>
+        <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd>: Launch selected shortcut in an incognito window.</li>
+        <li><kbd>P</kbd>: Pin or unpin the focused shortcut card.</li>
+        <li><kbd>E</kbd>: Open the editing screen for the focused shortcut card.</li>
+        <li><kbd>Delete</kbd> or <kbd>Backspace</kbd>: Delete the focused shortcut card.</li>
+        <li><kbd>Ctrl</kbd> + <kbd>1-9</kbd>: Instantly switch category tabs.</li>
+        <li><kbd>,</kbd> (Comma) or <kbd>Ctrl</kbd> + <kbd>,</kbd>: Slide open the Settings panel.</li>
+        <li><kbd>?</kbd> (Shift + <kbd>/</kbd>): Slide open this Information panel.</li>
+        <li><kbd>Ctrl</kbd> + <kbd>I</kbd> or <kbd>N</kbd>: Summon the Add Shortcut dialog box.</li>
+        <li><kbd>Escape</kbd>: Instantly close any modal, panel, or overlay.</li>
       </ul>
 
       <hr>
@@ -218,7 +214,6 @@
     </div>
   </div>
 
-  <!-- Custom Confirm and Alert Box Modal -->
   <div id="confirmAndAlertBox" class="confirmAndAlertBox hidden" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modalCard" role="document" aria-labelledby="confirmAndAlertBoxTitle" aria-describedby="confirmAndAlertBoxMessage">
       <div class="modalHeader">
@@ -233,7 +228,6 @@
   </div>
 
   <script src="index.js"></script>
-  <!-- MegaMind Solutions Toaster Library -->
   <script src="toaster.js"></script>
 </body>
 

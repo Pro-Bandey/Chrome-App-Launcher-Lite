@@ -9,7 +9,7 @@
     --text: #201a19;
     --bg: #fff8f6;
     --overlay: #201a191a;
-    --shadowOutset: 0 4px 12px 3px rgba(0, 0, 0, .08);
+    --shadowOutset: 4px 4px 0px rgba(0, 0, 0, .15);
     --shadowInset: inset 0 0 0 1px #9c413a;
     --alertBgColor: #fff8f6ee;
     --alertHeadingBgColor: #ffdad6;
@@ -27,7 +27,7 @@ body.darkTheme {
     --overlay: #00000066;
     --border: #534341;
     --borderColor: #ffb4ab4d;
-    --shadowOutset: 0 4px 16px 4px rgba(0, 0, 0, .5);
+    --shadowOutset: 4px 4px 0px rgba(0, 0, 0, .5);
     --alertBgColor: #201a19ee;
     --alertHeadingBgColor: #3b0906;
     --alertHeadingColor: #ffdad6;
@@ -49,7 +49,6 @@ body {
     overflow: hidden;
 }
 
-/* Header Area styling */
 .calHeader {
     display: flex;
     justify-content: space-between;
@@ -95,11 +94,12 @@ body {
     align-items: center;
 }
 
-#calThemeToggle:hover {
+#calThemeToggle:hover,
+#calThemeToggle:focus-visible {
     background: var(--grayMedium);
+    outline: 2px solid var(--accent);
 }
 
-/* Dynamic Categories Tab Bar */
 .calTabsContainer {
     display: flex;
     gap: 6px;
@@ -121,9 +121,11 @@ body {
     transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.categoryTab:hover {
+.categoryTab:hover,
+.categoryTab:focus-visible {
     border-color: var(--accent);
     background: var(--grayMedium);
+    outline: none;
 }
 
 .categoryTab.active {
@@ -132,7 +134,11 @@ body {
     border-color: var(--accent);
 }
 
-/* Shortcuts Grid system */
+.categoryTab.active:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: -4px;
+}
+
 .calLinkGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -141,7 +147,8 @@ body {
     justify-items: center;
     max-height: 80vh;
     overflow-y: auto;
-    padding: 2px;
+    padding: 4px;
+    contain: content;
 }
 
 @media (max-height: 1050px) {
@@ -190,6 +197,7 @@ body {
     border-radius: 0;
 }
 
+
 .card {
     width: 80px;
     height: 80px;
@@ -207,14 +215,20 @@ body {
     -webkit-user-select: none;
 }
 
-.card:hover {
+.card:hover,
+.card.keyboard-focused {
     background: var(--accentHover);
     border-color: var(--borderColor);
 }
 
+.card:focus-visible,
+.card.keyboard-focused {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 .card.pinned::before {
-    /* add base64 pin svg here */
-    content: "O";
+    content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cgo8IS0tIExpY2Vuc2U6IFBELiBNYWRlIGJ5IHBhb21lZGlhOiBodHRwczovL2dpdGh1Yi5jb20vcGFvbWVkaWEvc21hbGwtbi1mbGF0IC0tPgo8c3ZnIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIC0xMDI4LjQpIj4KICA8ZyB0cmFuc2Zvcm09Im1hdHJpeCguNzA3MTEgLjcwNzExIC0uNzA3MTEgLjcwNzExIDczNy42OCAyOTcuNzIpIj4KICAgPHBhdGggZD0ibTExIDEwMjguNHYxM2gxIDYuNDA2Yy0wLjU5NS0xLjEtMS40MTYtMi4xLTIuNDA2LTIuOHYtOGMwLjYxNi0wLjYgMS4xMzEtMS40IDEuNTMxLTIuMmgtNS41MzEtMXoiIGZpbGw9IiNmNDQyMzQiLz4KICAgPHBhdGggZD0ibTExIDEzdjIgNCAybDEgMnYtMi02LTJoLTF6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDEwMjguNCkiIGZpbGw9IiM3Nzc3NzciLz4KICAgPHBhdGggZD0ibTEyIDEzdjIgNCAyIDJsMS0ydi0yLTQtMmgtMXoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMTAyOC40KSIgZmlsbD0iIzc3Nzc3NyIvPgogICA8cGF0aCBkPSJtNi40Njg4IDEwMjguNGMwLjQwMDYgMC44IDAuOTE1IDEuNiAxLjUzMTIgMi4ydjhjLTAuOTg5NyAwLjctMS44MTEzIDEuNy0yLjQwNjIgMi44aDYuNDA2MnYtMTNoLTUuNTMxMnoiIGZpbGw9IiNmNDQyMzQiLz4KICA8L2c+CiA8L2c+Cjwvc3ZnPg==);
     position: absolute;
     top: -4px;
     left: -4px;
@@ -279,15 +293,17 @@ body {
     transition: opacity 0.2s;
 }
 
-.card:hover .menuBtn {
+.card:hover .menuBtn,
+.card.keyboard-focused .menuBtn {
     opacity: 1;
 }
 
-.menuBtn:hover {
+.menuBtn:hover,
+.menuBtn:focus-visible {
     background: var(--grayMedium);
+    outline: 1px solid var(--accent);
 }
 
-/* Context Menu elements */
 .contextMenu {
     display: none;
     flex-direction: column;
@@ -314,8 +330,10 @@ body {
     color: var(--text);
 }
 
-.contextMenu button:hover {
+.contextMenu button:hover,
+.contextMenu button:focus-visible {
     background: var(--grayMedium);
+    outline: none;
 }
 
 @keyframes fade5 {
@@ -330,7 +348,6 @@ body {
     }
 }
 
-/* App control bar footer */
 .calControls {
     display: flex;
     justify-content: space-around;
@@ -354,12 +371,13 @@ body {
     font-weight: bold;
 }
 
-.calControls button:hover {
+.calControls button:hover,
+.calControls button:focus-visible {
     background: var(--accentHover);
     color: var(--text);
+    outline: 2px solid var(--accent);
 }
 
-/* Side Panels Drawer styling (Settings & Info Drawers) */
 .sidePanel {
     position: fixed;
     top: 0;
@@ -406,13 +424,16 @@ body {
     padding: 0;
 }
 
+.sidePanelClose:focus-visible {
+    outline: 2px solid var(--accent);
+}
+
 .sidePanelContent {
     padding: 16px;
     overflow-y: auto;
     flex-grow: 1;
 }
 
-/* Settings Form elements */
 .settingsSection {
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
@@ -462,8 +483,9 @@ body {
     font-size: 12px;
 }
 
-.settingsField input:focus {
+.settingsField input:focus-visible {
     border-color: var(--accent);
+    box-shadow: var(--shadowInset);
 }
 
 .categoryManagerInput {
@@ -489,6 +511,10 @@ body {
     font-size: 12px;
 }
 
+.categoryManagerInputSection input:focus-visible {
+    border-color: var(--accent);
+}
+
 .categoryManagerInput button,
 .settingsRow button,
 .syncActions button {
@@ -507,10 +533,14 @@ body {
 }
 
 .categoryManagerInput button:hover,
+.categoryManagerInput button:focus-visible,
 .settingsRow button:hover,
-.syncActions button:hover {
+.settingsRow button:focus-visible,
+.syncActions button:hover,
+.syncActions button:focus-visible {
     background: var(--accent);
     color: var(--bg);
+    outline: none;
 }
 
 .settingsRow .danger {
@@ -519,7 +549,8 @@ body {
     width: 100%;
 }
 
-.settingsRow .danger:hover {
+.settingsRow .danger:hover,
+.settingsRow .danger:focus-visible {
     background: var(--red);
     color: var(--white);
 }
@@ -554,6 +585,10 @@ body {
     line-height: 1;
 }
 
+.deleteCatBtn:focus-visible {
+    outline: 1px solid var(--red);
+}
+
 .settingsRow select {
     padding: 5px 10px;
     border: 1px solid var(--border);
@@ -561,6 +596,10 @@ body {
     color: var(--text);
     outline: none;
     font-size: 12px;
+}
+
+.settingsRow select:focus-visible {
+    border-color: var(--accent);
 }
 
 .syncActions {
@@ -572,19 +611,17 @@ body {
     flex: 1;
 }
 
-/* Info Sidebar elements & Accordion Custom styling */
 .appInfoContent h2 {
     font-size: 16px;
     margin-top: 0;
 }
 
-.appInfoContent h3 {
-    font-size: 13px;
-    font-weight: 500;
+.appInfoContent p {
+    font-size: 14px;
 }
 
-.appInfoContent h4 {
-    font-size: 12px;
+.appInfoContent h4, .appInfoContent h3 {
+    font-size: 14px;
     margin-bottom: 6px;
     color: var(--accent);
 }
@@ -611,6 +648,10 @@ body {
     user-select: none;
 }
 
+.appInfoContent summary:focus-visible {
+    outline: 2px solid var(--accent);
+}
+
 .appInfoContent details p {
     padding: 8px 12px;
     margin: 0;
@@ -619,7 +660,6 @@ body {
     border-top: 1px solid var(--border);
 }
 
-/* Add Shortcut dialog styling */
 .addLinkBox,
 .infoDialog {
     display: none;
@@ -680,7 +720,7 @@ body {
     color: var(--text);
 }
 
-.addLinkBoxContent input[type="text"]:focus {
+.addLinkBoxContent input[type="text"]:focus-visible {
     border-color: var(--accent);
 }
 
@@ -705,6 +745,10 @@ body {
     color: var(--accent);
     cursor: pointer;
     font-size: 11px;
+}
+
+#calLinkIconFile::file-selector-button:focus-visible {
+    outline: 2px solid var(--accent);
 }
 
 .addLinkBoxButtons {
@@ -732,17 +776,22 @@ body {
     color: var(--text);
 }
 
+.addLinkBoxButtons .cancel:focus-visible {
+    outline: 2px solid var(--text);
+}
+
 .addLinkBoxButtons .add {
     background: var(--accent);
     color: var(--bg);
 }
 
-.addLinkBoxButtons .add:hover {
+.addLinkBoxButtons .add:hover,
+.addLinkBoxButtons .add:focus-visible {
     background: var(--accentHover);
     color: var(--text);
+    outline: none;
 }
 
-/* Browsing suggestion details list */
 .calTopSitesList {
     max-height: 240px;
     overflow-y: auto;
@@ -795,9 +844,11 @@ body {
     font-size: 11px;
 }
 
-.addTopSiteBtn:hover {
+.addTopSiteBtn:hover,
+.addTopSiteBtn:focus-visible {
     background: var(--accentHover);
     color: var(--text);
+    outline: none;
 }
 
 #calSuggestedCloseBtn {
@@ -813,11 +864,12 @@ body {
     font-size: 12px;
 }
 
-#calSuggestedCloseBtn:hover {
+#calSuggestedCloseBtn:hover,
+#calSuggestedCloseBtn:focus-visible {
     opacity: .8;
+    outline: 2px solid var(--text);
 }
 
-/* Custom Prompt, Confirm, and Alert Modal Styles */
 .confirmAndAlertBox {
     position: fixed;
     top: 0;
@@ -892,8 +944,10 @@ body {
     color: var(--text);
 }
 
-.btnSecondary:hover {
+.btnSecondary:hover,
+.btnSecondary:focus-visible {
     background: var(--border);
+    outline: none;
 }
 
 .btnPrimary {
@@ -901,9 +955,11 @@ body {
     color: var(--bg);
 }
 
-.btnPrimary:hover {
+.btnPrimary:hover,
+.btnPrimary:focus-visible {
     background: var(--accentHover);
     color: var(--text);
+    outline: none;
 }
 
 ::-webkit-scrollbar {
@@ -924,4 +980,10 @@ body {
 ::-webkit-scrollbar-thumb:active {
     background: var(--accentHover);
     cursor: grabbing;
+}
+
+.toast-container,
+.toast,
+.toaster {
+    border-radius: 0 !important;
 }
