@@ -160,7 +160,7 @@
       { "fallback": "FG", "name": "Figma", "url": "https://www.figma.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000019 },
       { "fallback": "QB", "name": "QuillBot", "url": "https://quillbot.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000020 },
       { "fallback": "P2G", "name": "PDF2Go", "url": "https://www.pdf2go.com", "category": "Tools", "clicks": 0, "dateAdded": 1717000000021 },
-      { "fallback": "GML", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico", "clicks": 0, "dateAdded": 1717000000022 },
+      { "fallback": "GML", "name": "Gmail", "url": "https://mail.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000022 },
       { "fallback": "CAL", "name": "Google Calendar", "url": "https://calendar.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000023 },
       { "fallback": "DRV", "name": "Google Drive", "url": "https://drive.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000024 },
       { "fallback": "SHT", "name": "Google Sheets", "url": "https://docs.google.com/spreadsheets", "category": "Work", "clicks": 0, "dateAdded": 1717000000025 },
