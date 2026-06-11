@@ -34,7 +34,7 @@
     }
   },
 
-  "permissions": ["tabs", "storage", "activeTab", "topSites"],
+  "permissions": ["tabs", "storage", "sidePanel", "activeTab", "topSites"],
 
   "host_permissions": ["<all_urls>"],
 
