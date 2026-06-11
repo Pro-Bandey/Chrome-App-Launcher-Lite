@@ -9,52 +9,61 @@
 
   let currentIndex = null;
   let editingIndex = null;
-  let draggedItem = null;
   let activeCategoryTab = "All";
 
   // Elements
-  const grid = document.getElementById("cal-link-grid");
-  const contextMenu = document.getElementById("cal-contextMenu");
-  const searchBar = document.getElementById("cal-search-bar");
-  const sortSelect = document.getElementById("cal-sort-select");
-  const themeToggle = document.getElementById("cal-theme-toggle");
+  const grid = document.getElementById("calLinkGrid");
+  const contextMenu = document.getElementById("calContextMenu");
+  const searchBar = document.getElementById("calSearchBar");
+  const sortSelect = document.getElementById("calSortSelect");
+  const themeToggle = document.getElementById("calThemeToggle");
 
   // Side Panels & Buttons
-  const settingsPanel = document.getElementById("cal-settings-panel");
-  const settingsBtn = document.getElementById("cal-settings-btn");
-  const settingsCloseBtn = document.getElementById("cal-settings-close-btn");
+  const settingsPanel = document.getElementById("calSettingsPanel");
+  const settingsBtn = document.getElementById("calSettingsBtn");
+  const settingsCloseBtn = document.getElementById("calSettingsCloseBtn");
 
-  const infoPanel = document.getElementById("cal-info-panel");
-  const infoBtn = document.getElementById("cal-info-btn");
-  const infoCloseBtn = document.getElementById("cal-info-close-btn");
+  const infoPanel = document.getElementById("calInfoPanel");
+  const infoBtn = document.getElementById("calInfoBtn");
+  const infoCloseBtn = document.getElementById("calInfoCloseBtn");
 
   // Popups & Modal inputs
-  const addBtn = document.getElementById("cal-add-btn");
-  const suggestedBtn = document.getElementById("cal-suggested-btn");
-  const popupBox = document.getElementById("cal-popupBox");
-  const popupBoxTitle = document.getElementById("add-link-heading");
-  const linkTitleInput = document.getElementById("cal-link-Tittle");
-  const linkUrlInput = document.getElementById("cal-link-Url");
-  const linkCategoryInput = document.getElementById("cal-link-Category");
-  const categoryDatalist = document.getElementById("category-suggestions");
-  const linkIconUrlInput = document.getElementById("cal-link-Icon-Url");
-  const linkIconFileInput = document.getElementById("cal-link-Icon-File");
-  const saveBtn = document.getElementById("cal-save-btn");
-  const cancelBtn = document.getElementById("cal-cancel-btn");
-  const suggestedDialog = document.getElementById("cal-suggested-dialog");
-  const topSitesList = document.getElementById("call-top-sites-list");
-  const suggestedCloseBtn = document.getElementById("cal-suggested-close-btn");
+  const addBtn = document.getElementById("calAddBtn");
+  const suggestedBtn = document.getElementById("calSuggestedBtn");
+  const popupBox = document.getElementById("calPopupBox");
+  const popupBoxTitle = document.getElementById("addLinkHeading");
+  const linkTitleInput = document.getElementById("calLinkTitle");
+  const linkUrlInput = document.getElementById("calLinkUrl");
+  const linkCategoryInput = document.getElementById("calLinkCategory");
+  const categoryDatalist = document.getElementById("categorySuggestions");
+  const linkIconUrlInput = document.getElementById("calLinkIconUrl");
+  const linkIconFileInput = document.getElementById("calLinkIconFile");
+  const saveBtn = document.getElementById("calSaveBtn");
+  const cancelBtn = document.getElementById("calCancelBtn");
+  const suggestedDialog = document.getElementById("calSuggestedDialog");
+  const topSitesList = document.getElementById("calTopSitesList");
+  const suggestedCloseBtn = document.getElementById("calSuggestedCloseBtn");
 
   // Settings Panel Inputs
-  const newCatInput = document.getElementById("cal-new-category-input");
-  const addCatBtn = document.getElementById("cal-add-category-btn");
-  const shapeSelect = document.getElementById("cal-shape-select");
-  const syncPushBtn = document.getElementById("cal-sync-push-btn");
-  const syncPullBtn = document.getElementById("cal-sync-pull-btn");
-  const exportBtn = document.getElementById("cal-export-btn");
-  const importBtn = document.getElementById("cal-import-btn");
-  const importFile = document.getElementById("cal-import-file");
-  const resetBtn = document.getElementById("cal-reset-btn");
+  const newCatInput = document.getElementById("calNewCategoryInput");
+  const addCatBtn = document.getElementById("calAddCategoryBtn");
+  const shapeSelect = document.getElementById("calShapeSelect");
+  const syncPushBtn = document.getElementById("calSyncPushBtn");
+  const syncPullBtn = document.getElementById("calSyncPullBtn");
+  const exportBtn = document.getElementById("calExportBtn");
+  const importBtn = document.getElementById("calImportBtn");
+  const importFile = document.getElementById("calImportFile");
+  const resetBtn = document.getElementById("calResetBtn");
+
+  // Custom Promise-Based Dialogue Elements
+  const _modal = {
+    backdrop: document.getElementById("confirmAndAlertBox"),
+    titleEl: document.getElementById("confirmAndAlertBoxTitle"),
+    msgEl: document.getElementById("confirmAndAlertBoxMessage"),
+    okBtn: document.getElementById("confirmAndAlertBoxOk"),
+    cancelBtn: document.getElementById("confirmAndAlertBoxCancel"),
+    visible: false
+  };
 
   // Initialize Storage Engine Sync Listeners
   if (storageAPI && extAPI.storage.onChanged) {
@@ -107,7 +116,6 @@
   }
 
   function sanitizeAndRender() {
-    // Fill legacy schema gaps
     launcherLinks.forEach(link => {
       if (!link.dateAdded) link.dateAdded = Date.now();
       if (link.clicks === undefined) link.clicks = 0;
@@ -121,9 +129,9 @@
   function applySettings() {
     const shape = launcherSettings.iconShape || "rounded";
     shapeSelect.value = shape;
-    grid.className = `cal-link-grid shape-${shape}`;
-    document.getElementById("cal-gh-token").value = launcherSettings.ghToken || "";
-    document.getElementById("cal-gist-id").value = launcherSettings.gistId || "";
+    grid.className = `calLinkGrid shape${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+    document.getElementById("calGhToken").value = launcherSettings.ghToken || "";
+    document.getElementById("calGistId").value = launcherSettings.gistId || "";
   }
 
   function getDefaultLinks() {
@@ -135,75 +143,87 @@
       { "fallback": "GPT", "name": "ChatGPT", "url": "https://chat.openai.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000004 },
       { "fallback": "GH", "name": "GitHub", "url": "https://github.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000005 },
       { "fallback": "YT", "name": "YouTube", "url": "https://www.youtube.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000006 },
-
-      { "fallback": "FB", "name": "Facebook", "url": "https://www.facebook.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000007 },
-      { "fallback": "IG", "name": "Instagram", "url": "https://www.instagram.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000008 },
-      { "fallback": "LI", "name": "LinkedIn", "url": "https://www.linkedin.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000009 },
-      { "fallback": "RD", "name": "Reddit", "url": "https://www.reddit.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000010 },
-      { "fallback": "WK", "name": "Wikipedia", "url": "https://www.wikipedia.org", "category": "Knowledge", "clicks": 0, "dateAdded": 1717000000011 },
-      { "fallback": "AMZ", "name": "Amazon", "url": "https://www.amazon.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000012 },
-      { "fallback": "NFLX", "name": "Netflix", "url": "https://www.netflix.com", "category": "Entertainment", "clicks": 0, "dateAdded": 1717000000013 },
-      { "fallback": "SPT", "name": "Spotify", "url": "https://www.spotify.com", "category": "Music", "clicks": 0, "dateAdded": 1717000000014 },
-      { "fallback": "WA", "name": "WhatsApp Web", "url": "https://web.whatsapp.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000015 },
-      { "fallback": "GDR", "name": "Google Drive", "url": "https://drive.google.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000016 },
-      { "fallback": "GMAP", "name": "Google Maps", "url": "https://maps.google.com", "category": "Utility", "clicks": 0, "dateAdded": 1717000000017 },
-      { "fallback": "GTR", "name": "Google Translate", "url": "https://translate.google.com", "category": "Utility", "clicks": 0, "dateAdded": 1717000000018 },
-      { "fallback": "OUT", "name": "Outlook", "url": "https://outlook.live.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000019 },
-      { "fallback": "MS", "name": "Microsoft", "url": "https://www.microsoft.com", "category": "Tech", "clicks": 0, "dateAdded": 1717000000020 },
-      { "fallback": "APPL", "name": "Apple", "url": "https://www.apple.com", "category": "Tech", "clicks": 0, "dateAdded": 1717000000021 },
-      { "fallback": "AWS", "name": "Amazon Web Services", "url": "https://aws.amazon.com", "category": "Cloud", "clicks": 0, "dateAdded": 1717000000022 },
-      { "fallback": "SO", "name": "Stack Overflow", "url": "https://stackoverflow.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000023 },
-      { "fallback": "MED", "name": "Medium", "url": "https://medium.com", "category": "Reading", "clicks": 0, "dateAdded": 1717000000024 },
-      { "fallback": "DC", "name": "Discord", "url": "https://discord.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000025 },
-      { "fallback": "SLK", "name": "Slack", "url": "https://slack.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000026 },
-      { "fallback": "ZM", "name": "Zoom", "url": "https://zoom.us", "category": "Work", "clicks": 0, "dateAdded": 1717000000027 },
-      { "fallback": "CAN", "name": "Canva", "url": "https://www.canva.com", "category": "Design", "clicks": 0, "dateAdded": 1717000000028 },
-      { "fallback": "NOT", "name": "Notion", "url": "https://www.notion.so", "category": "Productivity", "clicks": 0, "dateAdded": 1717000000029 },
-      { "fallback": "DBX", "name": "Dropbox", "url": "https://www.dropbox.com", "category": "Storage", "clicks": 0, "dateAdded": 1717000000030 },
-      { "fallback": "PP", "name": "PayPal", "url": "https://www.paypal.com", "category": "Finance", "clicks": 0, "dateAdded": 1717000000031 },
-      { "fallback": "STRP", "name": "Stripe", "url": "https://stripe.com", "category": "Finance", "clicks": 0, "dateAdded": 1717000000032 },
-      { "fallback": "SHP", "name": "Shopify", "url": "https://www.shopify.com", "category": "Ecommerce", "clicks": 0, "dateAdded": 1717000000033 },
-      { "fallback": "WP", "name": "WordPress", "url": "https://wordpress.com", "category": "Web", "clicks": 0, "dateAdded": 1717000000034 },
-      { "fallback": "CF", "name": "Cloudflare", "url": "https://www.cloudflare.com", "category": "DevOps", "clicks": 0, "dateAdded": 1717000000035 },
-      { "fallback": "OA", "name": "OpenAI", "url": "https://openai.com", "category": "AI", "clicks": 0, "dateAdded": 1717000000036 },
-      { "fallback": "NPM", "name": "npm", "url": "https://www.npmjs.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000037 },
-      { "fallback": "NODE", "name": "Node.js", "url": "https://nodejs.org", "category": "Dev", "clicks": 0, "dateAdded": 1717000000038 },
-      { "fallback": "PY", "name": "Python", "url": "https://www.python.org", "category": "Dev", "clicks": 0, "dateAdded": 1717000000039 },
-      { "fallback": "MDN", "name": "MDN Web Docs", "url": "https://developer.mozilla.org", "category": "Dev", "clicks": 0, "dateAdded": 1717000000040 },
-      { "fallback": "W3", "name": "W3Schools", "url": "https://www.w3schools.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000041 },
-      { "fallback": "CC", "name": "Codecademy", "url": "https://www.codecademy.com", "category": "Learning", "clicks": 0, "dateAdded": 1717000000042 },
-      { "fallback": "CRS", "name": "Coursera", "url": "https://www.coursera.org", "category": "Learning", "clicks": 0, "dateAdded": 1717000000043 },
-      { "fallback": "UDM", "name": "Udemy", "url": "https://www.udemy.com", "category": "Learning", "clicks": 0, "dateAdded": 1717000000044 },
-      { "fallback": "LC", "name": "LeetCode", "url": "https://leetcode.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000045 },
-      { "fallback": "HR", "name": "HackerRank", "url": "https://www.hackerrank.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000046 },
-      { "fallback": "FIG", "name": "Figma", "url": "https://www.figma.com", "category": "Design", "clicks": 0, "dateAdded": 1717000000047 },
-      { "fallback": "JIRA", "name": "Jira", "url": "https://www.atlassian.com/software/jira", "category": "Work", "clicks": 0, "dateAdded": 1717000000048 },
-      { "fallback": "TR", "name": "Trello", "url": "https://trello.com", "category": "Work", "clicks": 0, "dateAdded": 1717000000049 },
-      { "fallback": "AE", "name": "AliExpress", "url": "https://www.aliexpress.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000050 },
-      { "fallback": "EB", "name": "eBay", "url": "https://www.ebay.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000051 },
-      { "fallback": "WM", "name": "Walmart", "url": "https://www.walmart.com", "category": "Shopping", "clicks": 0, "dateAdded": 1717000000052 },
-      { "fallback": "BKNG", "name": "Booking.com", "url": "https://www.booking.com", "category": "Travel", "clicks": 0, "dateAdded": 1717000000053 },
-      { "fallback": "AIR", "name": "Airbnb", "url": "https://www.airbnb.com", "category": "Travel", "clicks": 0, "dateAdded": 1717000000054 },
-      { "fallback": "TA", "name": "TripAdvisor", "url": "https://www.tripadvisor.com", "category": "Travel", "clicks": 0, "dateAdded": 1717000000055 },
-      { "fallback": "KHA", "name": "Khan Academy", "url": "https://www.khanacademy.org", "category": "Learning", "clicks": 0, "dateAdded": 1717000000056 },
-      { "fallback": "GL", "name": "GitLab", "url": "https://gitlab.com", "category": "Dev", "clicks": 0, "dateAdded": 1717000000057 },
-      { "fallback": "DO", "name": "DigitalOcean", "url": "https://www.digitalocean.com", "category": "Cloud", "clicks": 0, "dateAdded": 1717000000058 },
-      { "fallback": "MOZ", "name": "Mozilla", "url": "https://www.mozilla.org", "category": "Tech", "clicks": 0, "dateAdded": 1717000000059 }
+      { "fallback": "FB", "name": "Facebook", "url": "https://www.facebook.com", "category": "Social", "clicks": 0, "dateAdded": 1717000000007 }
     ];
+  }
+
+  // Custom Promise-Based Dialogue Window Logic
+  function _showModal(title, msg, options = { showCancel: true, okText: "OK", cancelText: "Cancel" }) {
+    return new Promise((resolve) => {
+      if (!_modal.backdrop) {
+        resolve(window.confirm(msg));
+        return;
+      }
+
+      function cleanup() {
+        _modal.okBtn.removeEventListener("click", onOk);
+        _modal.cancelBtn.removeEventListener("click", onCancel);
+        document.removeEventListener("keydown", onKeyDown);
+        _modal.backdrop.classList.add("hidden");
+        _modal.backdrop.setAttribute("aria-hidden", "true");
+        _modal.visible = false;
+      }
+
+      function onOk() {
+        cleanup();
+        resolve(true);
+      }
+
+      function onCancel() {
+        cleanup();
+        resolve(false);
+      }
+
+      function onKeyDown(e) {
+        if (e.key === "Escape") onCancel();
+        if (e.key === "Enter" && document.activeElement !== _modal.cancelBtn) onOk();
+      }
+
+      _modal.titleEl.textContent = title || "";
+      _modal.msgEl.innerHTML = msg || "";
+      _modal.okBtn.textContent = options.okText || "OK";
+      _modal.cancelBtn.textContent = options.cancelText || "Cancel";
+      _modal.cancelBtn.style.display = options.showCancel ? "" : "none";
+
+      _modal.backdrop.classList.remove("hidden");
+      _modal.backdrop.setAttribute("aria-hidden", "false");
+      _modal.visible = true;
+      _modal.okBtn.focus();
+
+      _modal.okBtn.addEventListener("click", onOk);
+      _modal.cancelBtn.addEventListener("click", onCancel);
+      document.addEventListener("keydown", onKeyDown);
+    });
+  }
+
+  function showConfirm(msg, title = "Confirm Action") {
+    return _showModal(title, msg, { showCancel: true, okText: "Yes", cancelText: "No" });
+  }
+
+  function showAlert(msg, title = "Alert") {
+    return _showModal(title, msg, { showCancel: false, okText: "OK" });
+  }
+
+  // Debounce Optimization Helper
+  function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
   }
 
   // Dynamic Tabs Controller
   function renderTabs() {
-    const tabsContainer = document.getElementById("cal-tabs-container");
+    const tabsContainer = document.getElementById("calTabsContainer");
     tabsContainer.innerHTML = "";
 
-    // Ensure active category is still valid
     const allTabs = ["All", "General", ...launcherCategories];
     if (!allTabs.includes(activeCategoryTab)) activeCategoryTab = "All";
 
     allTabs.forEach(cat => {
       const btn = document.createElement("button");
-      btn.className = "category-tab" + (activeCategoryTab === cat ? " active" : "");
+      btn.className = "categoryTab" + (activeCategoryTab === cat ? " active" : "");
       btn.innerText = cat;
       btn.addEventListener("click", () => {
         activeCategoryTab = cat;
@@ -219,13 +239,12 @@
     });
   }
 
-  // Unified Multi-Sort Filter Grid System [1]
+  // Unified Multi-Sort Filter Grid System with DocumentFragment Optimization
   function renderGrid() {
     grid.innerHTML = "";
     const searchTerm = searchBar.value.toLowerCase();
     const sortVal = sortSelect.value;
 
-    // Phase 1: Filter
     let filtered = launcherLinks.filter(link => {
       const matchesSearch = link.name.toLowerCase().includes(searchTerm);
       let matchesCategory = false;
@@ -240,9 +259,7 @@
       return matchesSearch && matchesCategory;
     });
 
-    // Phase 2: Sort based on metadata
     filtered.sort((a, b) => {
-      // Pinned items float to top per category layout
       const pinA = a.isPinned ? 1 : 0;
       const pinB = b.isPinned ? 1 : 0;
       if (pinA !== pinB) return pinB - pinA;
@@ -265,7 +282,8 @@
       }
     });
 
-    // Phase 3: Build Grid Items
+    const fragment = document.createDocumentFragment();
+
     filtered.forEach(link => {
       const idx = launcherLinks.indexOf(link);
       const card = document.createElement("a");
@@ -274,15 +292,14 @@
       if (link.isPinned) card.classList.add("pinned");
       card.title = `${link.name}` + (link.category ? ` (${link.category})` : "") + ` | Visited: ${link.clicks || 0}`;
       card.dataset.index = idx;
-      card.draggable = true;
+      card.draggable = false; // Disabled internal element dragging capabilities
 
       const fallback = link.fallback || generateFallback(link.name);
       const bg = getRandomColor();
-      card.innerHTML = `<div class="icon" style="background:${bg};color:#fff;">${fallback}</div><div class="name">${link.name}</div><div class="menu-btn">⋮</div>`;
+      card.innerHTML = `<div class="icon" style="background:${bg};color:#fff;">${fallback}</div><div class="name">${link.name}</div><div class="menuBtn">⋮</div>`;
 
-      // Prevent popup closure and open programmatically in active tab [1]
       card.addEventListener("click", e => {
-        if (!e.target.classList.contains("menu-btn")) {
+        if (!e.target.classList.contains("menuBtn")) {
           e.preventDefault();
           openLink(idx, false);
         }
@@ -292,22 +309,20 @@
         currentIndex = idx;
         showContextMenu(e.pageX, e.pageY);
       });
-      card.querySelector(".menu-btn").addEventListener("click", e => {
+      card.querySelector(".menuBtn").addEventListener("click", e => {
         e.stopPropagation();
         currentIndex = idx;
         showContextMenu(e.pageX, e.pageY);
       });
 
-      // Internal Drag Events
-      card.addEventListener('dragstart', () => { draggedItem = card; setTimeout(() => card.classList.add('dragging'), 0); });
-      card.addEventListener('dragend', () => { card.classList.remove('dragging'); draggedItem = null; });
-
-      grid.appendChild(card);
+      fragment.appendChild(card);
       loadFavicon(card, link, fallback);
     });
+
+    grid.appendChild(fragment);
   }
 
-  // Standard Programmatic Link Router [1]
+  // Programmatic Link Routing Navigation
   function openLink(index, newTab = false) {
     if (index < 0 || index >= launcherLinks.length) return;
     const link = launcherLinks[index];
@@ -328,10 +343,10 @@
     }
   }
 
-  function openIncognito(index) {
+  async function openIncognito(index) {
     const url = launcherLinks[index].url;
     if (extAPI && extAPI.windows) extAPI.windows.create({ url: url, incognito: true });
-    else alert("Incognito unavailable in current context.");
+    else await showAlert("Incognito unavailable in current context.", "Feature Restricted");
   }
 
   function generateFallback(name) {
@@ -345,7 +360,7 @@
     return `hsl(${h},${s}%,${l}%)`;
   }
 
-  // Favicon Loader Engine
+  // Optimized Favicon Cache and Fetching Engine
   function loadFavicon(card, link, fallback) {
     const icon = card.querySelector(".icon");
     if (link.icon) {
@@ -368,6 +383,8 @@
           icon.innerHTML = "";
           icon.style.background = "transparent";
           icon.appendChild(img);
+          link.icon = img.src; // Save successfully resolved asset URL inside Storage Cache
+          saveAll();
         };
         img.onerror = () => { i++; tryNext(); };
       }
@@ -375,14 +392,9 @@
     } catch (e) { }
   }
 
-  // Drag and Drop External Link Syncing
+  // External Drag and Drop Bookmarks Sync Ingestion (No Internal Re-ordering)
   grid.addEventListener('dragover', e => {
     e.preventDefault();
-    const afterElement = getDragAfterElement(grid, e.clientY);
-    if (draggedItem) {
-      if (afterElement == null) grid.appendChild(draggedItem);
-      else grid.insertBefore(draggedItem, afterElement);
-    }
   });
 
   grid.addEventListener('drop', e => {
@@ -392,14 +404,6 @@
     if (urlData) {
       e.preventDefault();
       handleDroppedLink(urlData, textData);
-    } else {
-      // Handle Internal Drag Re-ordering Drop
-      const newOrder = [...grid.querySelectorAll('.card')].map(card => launcherLinks[card.dataset.index]);
-      const visibleIndexes = [...grid.querySelectorAll('.card')].map(card => parseInt(card.dataset.index));
-      launcherLinks.forEach((l, i) => { if (!visibleIndexes.includes(i)) newOrder.push(l); });
-      launcherLinks = newOrder;
-      saveAll();
-      renderGrid();
     }
   });
 
@@ -417,16 +421,7 @@
     linkCategoryInput.value = (activeCategoryTab === "All" || activeCategoryTab === "General") ? "" : activeCategoryTab;
   }
 
-  function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
-    return draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) { return { offset: offset, element: child }; } else { return closest; }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-  }
-
-  // Right-Click Context Menu Coordinates Control
+  // Context Menu Controls
   function showContextMenu(x, y) {
     contextMenu.style.display = "flex";
     if (x + contextMenu.offsetWidth > window.innerWidth) x = window.innerWidth - contextMenu.offsetWidth - 5;
@@ -439,16 +434,16 @@
   contextMenu.addEventListener("click", e => {
     if (currentIndex === null) return;
     const action = e.target.dataset.action;
-    if (action === "cal-open") openLink(currentIndex, false);
-    else if (action === "cal-Newtab") openLink(currentIndex, true);
-    else if (action === "cal-incognito") openIncognito(currentIndex);
-    else if (action === "cal-pin") {
+    if (action === "calOpen") openLink(currentIndex, false);
+    else if (action === "calNewTab") openLink(currentIndex, true);
+    else if (action === "calIncognito") openIncognito(currentIndex);
+    else if (action === "calPin") {
       launcherLinks[currentIndex].isPinned = !launcherLinks[currentIndex].isPinned;
       saveAll();
       renderGrid();
     }
-    else if (action === "cal-edit") { editingIndex = currentIndex; openModal(true); }
-    else if (action === "cal-delete") {
+    else if (action === "calEdit") { editingIndex = currentIndex; openModal(true); }
+    else if (action === "calDelete") {
       launcherLinks.splice(currentIndex, 1);
       saveAll();
       renderGrid();
@@ -462,7 +457,11 @@
   infoBtn.addEventListener("click", () => infoPanel.classList.add("open"));
   infoCloseBtn.addEventListener("click", () => infoPanel.classList.remove("open"));
 
+<<<<<<< Updated upstream
   // Category Tab settings control manager
+=======
+  // Category Tab Actions
+>>>>>>> Stashed changes
   addCatBtn.addEventListener("click", () => {
     const name = newCatInput.value.trim();
     if (name && !launcherCategories.includes(name)) {
@@ -471,24 +470,27 @@
       saveAll();
       renderTabs();
       renderCategorySettingsList();
+    } else {
+      showAlert('Plaese type a category name input bar first.')
     }
   });
 
   function renderCategorySettingsList() {
-    const container = document.getElementById("cal-categories-list");
+    const container = document.getElementById("calCategoriesList");
     container.innerHTML = "";
     launcherCategories.forEach((cat, index) => {
       const item = document.createElement("div");
-      item.className = "settings-list-item";
-      item.innerHTML = `<span>${cat}</span><button class="delete-cat-btn" data-index="${index}">&times;</button>`;
-      item.querySelector(".delete-cat-btn").addEventListener("click", () => deleteCategory(index));
+      item.className = "settingsListItem";
+      item.innerHTML = `<span>${cat}</span><button class="deleteCatBtn" data-index="${index}">&times;</button>`;
+      item.querySelector(".deleteCatBtn").addEventListener("click", () => deleteCategory(index));
       container.appendChild(item);
     });
   }
 
-  function deleteCategory(index) {
+  async function deleteCategory(index) {
     const catName = launcherCategories[index];
-    if (confirm(`Are you sure you want to remove the Category: "${catName}"? Existing shortcuts inside will default back into "General".`)) {
+    const confirmDelete = await showConfirm(`Are you sure you want to remove the Category: "${catName}"? Existing shortcuts inside will default back into "General".`, "Delete Category");
+    if (confirmDelete) {
       launcherLinks.forEach(l => { if (l.category === catName) l.category = ""; });
       launcherCategories.splice(index, 1);
       saveAll();
@@ -498,18 +500,24 @@
     }
   }
 
-  // Shape Configuration Control
+  // Shape Configuration Change Control
   shapeSelect.addEventListener("change", () => {
     launcherSettings.iconShape = shapeSelect.value;
     saveAll();
     applySettings();
   });
 
-  // Gist Cloud Sync push/pull mechanism [1]
+  // Gist Cloud Sync push/pull mechanisms
   syncPushBtn.addEventListener("click", async () => {
+<<<<<<< Updated upstream
     const token = document.getElementById("cal-gh-token").value.trim();
     let gistId = document.getElementById("cal-gist-id").value.trim();
     if (!token) return alert("GitHub Personal Access Token is required to Sync.");
+=======
+    const token = document.getElementById("calGhToken").value.trim();
+    let gistId = document.getElementById("calGistId").value.trim();
+    if (!token) return showAlert("GitHub Personal Access Token is required to Sync.", "Authentication Error");
+>>>>>>> Stashed changes
 
     launcherSettings.ghToken = token;
     saveAll();
@@ -540,20 +548,20 @@
       const responseData = await res.json();
       if (!gistId && responseData.id) {
         gistId = responseData.id;
-        document.getElementById("cal-gist-id").value = gistId;
+        document.getElementById("calGistId").value = gistId;
         launcherSettings.gistId = gistId;
         saveAll();
       }
-      alert("Successful push transfer directly to GitHub Cloud!");
+      await showAlert("Successful push transfer directly to GitHub Cloud!", "Sync Complete");
     } catch (err) {
-      alert("Cloud push sync failed: " + err.message);
+      await showAlert("Cloud push sync failed: " + err.message, "Sync Error");
     }
   });
 
   syncPullBtn.addEventListener("click", async () => {
-    const token = document.getElementById("cal-gh-token").value.trim();
-    const gistId = document.getElementById("cal-gist-id").value.trim();
-    if (!token || !gistId) return alert("Both API Token and Gist ID are required to request storage pull.");
+    const token = document.getElementById("calGhToken").value.trim();
+    const gistId = document.getElementById("calGistId").value.trim();
+    if (!token || !gistId) return showAlert("Both API Token and Gist ID are required to request storage pull.", "Pull Error");
 
     try {
       const res = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -570,17 +578,17 @@
           launcherSettings = { ...launcherSettings, ...parsed.launcherSettings };
           saveAll();
           sanitizeAndRender();
-          alert("Successful download and synchronization transfer from Cloud!");
+          await showAlert("Successful download and synchronization transfer from Cloud!", "Sync Complete");
         }
       } else {
-        alert("The designated backup filename could not be parsed inside the requested Gist ID.");
+        await showAlert("The designated backup filename could not be parsed inside the requested Gist ID.", "Import Error");
       }
     } catch (err) {
-      alert("Cloud sync load failed: " + err.message);
+      await showAlert("Cloud sync load failed: " + err.message, "Sync Error");
     }
   });
 
-  // Data Backups Local Actions
+  // Local Data Backup Actions
   exportBtn.onclick = () => {
     const a = document.createElement("a");
     const backupObj = { launcherLinks, launcherCategories, launcherSettings };
@@ -593,7 +601,7 @@
   importBtn.onclick = () => importFile.click();
   importFile.onchange = e => {
     const reader = new FileReader();
-    reader.onload = ev => {
+    reader.onload = async ev => {
       try {
         const data = JSON.parse(ev.target.result);
         if (data.launcherLinks) {
@@ -602,20 +610,24 @@
           launcherSettings = data.launcherSettings || launcherSettings;
           saveAll();
           sanitizeAndRender();
+          await showAlert("Data successfully imported!", "Import Complete");
         } else if (Array.isArray(data)) {
-          // Backward compatibility import logic
           launcherLinks = data;
           saveAll();
           sanitizeAndRender();
+          await showAlert("Data successfully imported!", "Import Complete");
         }
-      } catch (err) { alert('Failed parsing the imported configuration file.'); }
+      } catch (err) {
+        await showAlert('Failed parsing the imported configuration file.', "Format Error");
+      }
     };
     if (e.target.files[0]) reader.readAsText(e.target.files[0]);
     e.target.value = '';
   };
 
-  resetBtn.onclick = () => {
-    if (confirm("Reset layout? Local modifications will clear back to factory installation configurations.")) {
+  resetBtn.onclick = async () => {
+    const confirmReset = await showConfirm("Reset layout? Local modifications will clear back to factory installation configurations.", "Reset Configurations");
+    if (confirmReset) {
       if (storageAPI) {
         storageAPI.clear(() => window.location.reload());
       } else {
@@ -625,7 +637,7 @@
     }
   };
 
-  // Create Shortcut Dialog Popup
+  // Shortcut Dialog Popup Box Manager
   function openModal(edit = false) {
     popupBox.style.display = "flex";
     if (edit && editingIndex !== null) {
@@ -650,13 +662,13 @@
   function closeModal() { popupBox.style.display = "none"; }
   cancelBtn.addEventListener("click", closeModal);
 
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
     const name = linkTitleInput.value.trim();
     const cat = linkCategoryInput.value.trim();
     const iconUrl = linkIconUrlInput.value.trim();
     let url = linkUrlInput.value.trim();
 
-    if (!name || !url) return alert("Name and target URL coordinates are required.");
+    if (!name || !url) return showAlert("Name and target URL coordinates are required.", "Required Fields");
     url = /^https?:\/\//i.test(url) ? url : "https://" + url;
 
     const commitShortcut = (iconData = null) => {
@@ -686,7 +698,7 @@
 
     const iconFile = linkIconFileInput.files[0];
     if (iconFile) {
-      if (iconFile.size > 50000) return alert("Uploaded image too large. Please select file <= 50KB to preserve memory parameters.");
+      if (iconFile.size > 50000) return showAlert("Uploaded image too large. Please select file <= 50KB to preserve memory parameters.", "File Limit Error");
       const reader = new FileReader();
       reader.onload = e => commitShortcut(e.target.result);
       reader.readAsDataURL(iconFile);
@@ -695,7 +707,7 @@
     }
   });
 
-  // Top Suggested Sites API Dialog Control
+  // Top Suggested Sites API Integration Control
   suggestedBtn.addEventListener("click", () => {
     suggestedDialog.style.display = 'flex';
     topSitesList.innerHTML = "Retrieving system logs...";
@@ -708,15 +720,15 @@
         }
         sites.slice(0, 15).forEach(site => {
           const item = document.createElement("div");
-          item.className = "top-site-item";
+          item.className = "topSiteItem";
           item.innerHTML = `
-            <div class="top-site-info">
-              <span class="top-site-title">${site.title || "Unknown Page"}</span>
-              <span class="top-site-url">${site.url}</span>
+            <div class="topSiteInfo">
+              <span class="topSiteTitle">${site.title || "Unknown Page"}</span>
+              <span class="topSiteUrl">${site.url}</span>
             </div>
-            <button class="add-top-site-btn" title="Add to Launcher">+</button>
+            <button class="addTopSiteBtn" title="Add to Launcher">+</button>
           `;
-          item.querySelector('.add-top-site-btn').addEventListener("click", () => {
+          item.querySelector('.addTopSiteBtn').addEventListener("click", () => {
             launcherLinks.push({
               name: site.title || "Website",
               url: site.url,
@@ -736,23 +748,28 @@
         });
       });
     } else {
+<<<<<<< Updated upstream
       topSitesList.innerHTML = "<p>Standard Chrome TopSites API interface is not accessible outside active browser environments.</p>";
+=======
+      topSitesList.innerHTML = "<p>The standard browser Top Sites API is not accessible outside of extensions. Install the packed build to access profile metrics.</p>";
+>>>>>>> Stashed changes
     }
   });
   suggestedCloseBtn.addEventListener('click', () => suggestedDialog.style.display = 'none');
 
-  // Input Events
-  searchBar.addEventListener('input', renderGrid);
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-  });
-  if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
-  addBtn.onclick = () => openModal(false);
-
+  // Input Events (Debounced search bar initialization)
+  searchBar.addEventListener('input', debounce(renderGrid, 120));
   sortSelect.addEventListener('change', renderGrid);
 
-  // Global Hotkeys Control Intercepts
+  // Theme Toggler Initialization
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('darkTheme');
+    localStorage.setItem('theme', document.body.classList.contains('darkTheme') ? 'dark' : 'light');
+  });
+  if (localStorage.getItem('theme') === 'dark') document.body.classList.add('darkTheme');
+  addBtn.onclick = () => openModal(false);
+
+  // Global Hotkey Interceptors
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey && e.key === 'f') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
       e.preventDefault();

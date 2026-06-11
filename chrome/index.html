@@ -2,18 +2,28 @@
 <html lang="en">
 
 <head>
+<<<<<<< Updated upstream
   <meta charset="UTF-8">
   <title>App Launcher Lite</title>
+=======
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrome App Launcher Lite</title>
+>>>>>>> Stashed changes
   <link rel="stylesheet" href="index.css">
   <link rel="shortcut icon" href="icons/32.png" type="image/x-icon">
 </head>
 
+<<<<<<< Updated upstream
 <body>
+=======
+<body id="bodyWidth">
+>>>>>>> Stashed changes
   <!-- Header Area -->
-  <div class="cal-header">
-    <input title="Type To Search" type="text" id="cal-search-bar" placeholder="Search...">
+  <div class="calHeader">
+    <input title="Type To Search" type="text" id="calSearchBar" placeholder="Search...">
 
-    <select title="Sort Shortcuts" id="cal-sort-select">
+    <select title="Sort Shortcuts" id="calSortSelect">
       <option value="name">Name (A-Z)</option>
       <option value="name-desc">Name (Z-A)</option>
       <option value="newest">New First</option>
@@ -22,7 +32,7 @@
       <option value="least-visited">Least Visited</option>
     </select>
 
-    <button id="cal-theme-toggle" title="Switch Theme">
+    <button id="calThemeToggle" title="Switch Theme">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
         <path
           d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 010 1.06l-1.591 1.59a.75.75 0 11-1.06-1.06l1.59-1.59a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.894 17.894a.75.75 0 01-1.06 0l-1.59-1.591a.75.75 0 111.06-1.06l1.59 1.59a.75.75 0 010 1.061zM12 18a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM5.106 17.894a.75.75 0 010-1.06l1.59-1.59a.75.75 0 111.06 1.06l-1.59 1.59a.75.75 0 01-1.06 0zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM6.106 5.106a.75.75 0 011.06 0l1.591 1.59a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06z" />
@@ -31,84 +41,100 @@
   </div>
 
   <!-- Dynamic Categories Tab Bar -->
-  <div class="cal-tabs-container" id="cal-tabs-container"></div>
+  <div class="calTabsContainer" id="calTabsContainer"></div>
 
   <!-- Shortcuts Grid -->
-  <div class="cal-link-grid" id="cal-link-grid"></div>
+  <div class="calLinkGrid" id="calLinkGrid"></div>
 
   <!-- Base Controls Area -->
-  <div id="cal-controls" class="cal-controls">
-    <button title="Add New Shortcut" id="cal-add-btn">Add</button>
-    <button title="Top Suggested Sites" id="cal-suggested-btn">Suggested</button>
-    <button title="Settings" id="cal-settings-btn">Settings</button>
-    <button title="App Info" id="cal-info-btn">Info</button>
+  <div id="calControls" class="calControls">
+    <button title="Add New Shortcut" id="calAddBtn">Add</button>
+    <button title="Top Suggested Sites" id="calSuggestedBtn">Suggested</button>
+    <button title="Settings" id="calSettingsBtn">Settings</button>
+    <button title="App Info" id="calInfoBtn">Info</button>
   </div>
 
   <!-- Right-Click Context Menu -->
-  <div id="cal-contextMenu" class="context-menu">
-    <button title="Open" class="menu-item" data-action="cal-open">Open</button>
-    <button title="Open in New Tab" class="menu-item" data-action="cal-Newtab">Open in Tab</button>
-    <button title="Open in Incognito Tab" class="menu-item" data-action="cal-incognito">Open in Incognito</button>
-    <button title="Pin/Unpin This Shortcut" class="menu-item" data-action="cal-pin">Pin/Unpin</button>
-    <button title="Edit This Shortcut" class="menu-item" data-action="cal-edit">Edit</button>
-    <button title="Delete This Shortcut" class="menu-item" data-action="cal-delete">Delete</button>
+  <div id="calContextMenu" class="contextMenu">
+    <button title="Open" class="menuItem" data-action="calOpen">Open</button>
+    <button title="Open in New Tab" class="menuItem" data-action="calNewTab">Open in Tab</button>
+    <button title="Open in Incognito Tab" class="menuItem" data-action="calIncognito">Open in Incognito</button>
+    <button title="Pin/Unpin This Shortcut" class="menuItem" data-action="calPin">Pin/Unpin</button>
+    <button title="Edit This Shortcut" class="menuItem" data-action="calEdit">Edit</button>
+    <button title="Delete This Shortcut" class="menuItem" data-action="calDelete">Delete</button>
   </div>
 
   <!-- Add/Edit Modal Box -->
-  <div class="add-link-box" id="cal-popupBox" style="display:none;">
-    <div class="add-link-box-content">
-      <h2 id="add-link-heading">Add Shortcut</h2>
-      <input title="Type Name" type="text" id="cal-link-Tittle" autocomplete="off" placeholder="Name" />
-      <input title="Type Link" type="text" id="cal-link-Url" autocomplete="off" placeholder="Pro-Bandey.github.io" />
-      <input title="Select Category" type="text" id="cal-link-Category" autocomplete="off"
-        placeholder="Category (e.g. Work, Social)" list="category-suggestions" />
-      <datalist id="category-suggestions"></datalist>
-      <input title="Paste Icon URL" type="text" id="cal-link-Icon-Url" autocomplete="off"
+  <div class="addLinkBox" id="calPopupBox" style="display:none;">
+    <div class="addLinkBoxContent">
+      <h2 id="addLinkHeading">Add Shortcut</h2>
+      <input title="Type Name" type="text" id="calLinkTitle" autocomplete="off" placeholder="Name" />
+      <input title="Type Link" type="text" id="calLinkUrl" autocomplete="off" placeholder="Pro-Bandey.github.io" />
+      <input title="Select Category" type="text" id="calLinkCategory" autocomplete="off"
+        placeholder="Category (e.g. Work, Social)" list="categorySuggestions" />
+      <datalist id="categorySuggestions"></datalist>
+      <input title="Paste Icon URL" type="text" id="calLinkIconUrl" autocomplete="off"
         placeholder="Optional: Icon URL" />
-      <div title="Upload Icon From Local" class="icon-uploader">
+      <div title="Upload Icon From Local" class="iconUploader">
         <span>Or upload icon:</span>
-        <input type="file" id="cal-link-Icon-File" accept="image/*">
+        <input type="file" id="calLinkIconFile" accept="image/*">
       </div>
-      <div class="add-link-box-buttons">
-        <button title="Save Changes" class="add" id="cal-save-btn">Save</button>
-        <button title="Cancel Changes" class="cancel" id="cal-cancel-btn">Cancel</button>
+      <div class="addLinkBoxButtons">
+        <button title="Save Changes" class="add" id="calSaveBtn">Save</button>
+        <button title="Cancel Changes" class="cancel" id="calCancelBtn">Cancel</button>
       </div>
     </div>
   </div>
 
   <!-- Suggested Sites Modal -->
-  <div id="cal-suggested-dialog" class="info-dialog" style="display: none;">
-    <div class="info-dialog-content">
-      <h2 class="info-dialog-heading">Top Visited Sites</h2>
-      <div title="Top Suggested Sites" id="call-top-sites-list" class="call-top-sites-list"></div>
-      <button title="Close" id="cal-suggested-close-btn">Close</button>
+  <div id="calSuggestedDialog" class="infoDialog" style="display: none;">
+    <div class="infoDialogContent">
+      <h2 class="infoDialogHeading">Top Visited Sites</h2>
+      <div title="Top Suggested Sites" id="calTopSitesList" class="calTopSitesList"></div>
+      <button title="Close" id="calSuggestedCloseBtn">Close</button>
     </div>
   </div>
 
   <!-- Settings Side Panel (Sliding Drawer) -->
-  <div id="cal-settings-panel" class="side-panel">
-    <div class="side-panel-header">
+  <div id="calSettingsPanel" class="sidePanel">
+    <div class="sidePanelHeader">
       <h2>Settings</h2>
-      <button class="side-panel-close" id="cal-settings-close-btn">&times;</button>
+      <button class="sidePanelClose" id="calSettingsCloseBtn">&times;</button>
     </div>
-    <div class="side-panel-content">
+    <div class="sidePanelContent">
       <!-- Section 1: Categories Manager -->
-      <div class="settings-section">
+      <div class="settingsSection">
         <h3>Manage Tab Categories</h3>
+<<<<<<< Updated upstream
         <div class="category-manager-input">
           <input type="text" id="cal-new-category-input" placeholder="New Category...">
           <button id="cal-add-category-btn">Add</button>
           <div id="cal-categories-list" class="settings-list"></div>
+=======
+        <div class="categoryManagerInput">
+          <div class="categoryManagerInputSection">
+            <input type="text" id="calNewCategoryInput" placeholder="New Category...">
+            <button id="calAddCategoryBtn">Add</button>
+          </div>
+
+          <div id="calCategoriesList" class="settingsList"></div>
+>>>>>>> Stashed changes
         </div>
       </div>
 
       <!-- Section 2: Layout / Appearance Settings -->
-      <div class="settings-section">
+      <div class="settingsSection">
         <h3>Appearance</h3>
+<<<<<<< Updated upstream
         <div class="settings-row">
           <label for="cal-shape-select">Icon Shape:</label>
           <select id="cal-shape-select">
             <option value="rounded">Rounded Square</option>
+=======
+        <div class="settingsRow">
+          <label for="calShapeSelect">Icon Shape:</label>
+          <select id="calShapeSelect">
+>>>>>>> Stashed changes
             <option value="circle">Circle</option>
             <option value="square">Square</option>
           </select>
@@ -116,58 +142,115 @@
       </div>
 
       <!-- Section 3: GitHub Gist Cloud Sync -->
-      <div class="settings-section">
+      <div class="settingsSection">
         <h3>Cloud Sync (GitHub Gist)</h3>
-        <div class="settings-field">
-          <label for="cal-gh-token">GitHub Token:</label>
-          <input type="password" id="cal-gh-token" placeholder="ghp_xxxxxxxx">
+        <div class="settingsField">
+          <label for="calGhToken">GitHub Token:</label>
+          <input type="password" id="calGhToken" placeholder="ghp_xxxxxxxx">
         </div>
-        <div class="settings-field">
-          <label for="cal-gist-id">Gist ID (Optional):</label>
-          <input type="text" id="cal-gist-id" placeholder="Paste Existing Gist ID">
+        <div class="settingsField">
+          <label for="calGistId">Gist ID (Optional):</label>
+          <input type="text" id="calGistId" placeholder="Paste Existing Gist ID">
         </div>
-        <div class="settings-row sync-actions">
-          <button id="cal-sync-push-btn" title="Save current config to Cloud">Push</button>
-          <button id="cal-sync-pull-btn" title="Download config from Cloud">Pull</button>
+        <div class="settingsRow syncActions">
+          <button id="calSyncPushBtn" title="Save current config to Cloud">Push</button>
+          <button id="calSyncPullBtn" title="Download config from Cloud">Pull</button>
         </div>
       </div>
 
       <!-- Section 4: Data Portability & Resets -->
-      <div class="settings-section">
+      <div class="settingsSection">
         <h3>Data Backup</h3>
-        <div class="settings-row">
-          <button title="Export Backup" id="cal-export-btn">Export</button>
-          <button title="Restore Backup" id="cal-import-btn">Import</button>
-          <input type="file" id="cal-import-file" accept="application/json" hidden />
-          <button title="Restore To Default" id="cal-reset-btn" class="danger">Reset Layout</button>
+        <div class="settingsRow">
+          <button title="Export Backup" id="calExportBtn">Export</button>
+          <button title="Restore Backup" id="calImportBtn">Import</button>
+          <input type="file" id="calImportFile" accept="application/json" hidden />
+          <button title="Restore To Default" id="calResetBtn" class="danger">Reset Layout</button>
         </div>
       </div>
     </div>
   </div>
-
+  
   <!-- Info Side Panel (Sliding Drawer) -->
-  <div id="cal-info-panel" class="side-panel">
-    <div class="side-panel-header">
+  <div id="calInfoPanel" class="sidePanel">
+    <div class="sidePanelHeader">
       <h2>App Information</h2>
-      <button class="side-panel-close" id="cal-info-close-btn">&times;</button>
+      <button class="sidePanelClose" id="calInfoCloseBtn">&times;</button>
     </div>
-    <div class="side-panel-content app-info-content">
+    <div class="sidePanelContent appInfoContent">
       <h2><strong>Chrome App Launcher</strong></h2>
+<<<<<<< Updated upstream
       <h3><strong>Version:</strong> 6.0</h3>
       <p>A high-performance shortcut launcher optimized for smooth cross-browser experiences.</p>
 
       <h4>Key Features Implemented:</h4>
+=======
+      <h3><strong>Version:</strong> 9.5</h3>
+      <p>A shortcut management launcher optimized for quick navigation and layout customization in browser environments.</p>
+
+      <h4>Quick Hotkeys & Commands:</h4>
+>>>>>>> Stashed changes
       <ul>
-        <li>Integrated Gist Cloud Synchronization.</li>
-        <li>Drag-and-Drop external links and sorting.</li>
-        <li>Dynamic Tabbed Categories.</li>
-        <li>Extended customization options.</li>
-        <li>Resolved link routing navigation issues.</li>
+        <li><strong>Focus Search:</strong> Press <code>/</code> or <code>Ctrl + F</code> while the launcher is open.</li>
+        <li><strong>Close Active UI:</strong> Press <code>Escape</code> to immediately hide modal windows, context menus, or sliding panels.</li>
+        <li><strong>Context Menu:</strong> Right-click or click the <code>⋮</code> icon on any card to show options.</li>
       </ul>
+<<<<<<< Updated upstream
     </div>
   </div>
 
   <script src="index.js"></script>
+=======
+      <hr>
+      <h4>Usage Guide & Documentation:</h4>
+      <details>
+        <summary>How do I add new shortcuts?</summary>
+        <p>Click the "Add" button on the bottom controls bar to write values manually. Alternatively, drag and drop any URL string from another window or address bar directly onto the central link grid to display the shortcut screen prepopulated with those parameters.</p>
+      </details>
+      <details>
+        <summary>How do I edit or delete a card?</summary>
+        <p>Right-click (or select the vertical three-dot icon in the corner of a card) to toggle the options menu. From there you can edit the properties, pin/unpin cards to keep them anchored at the top, or delete them permanently.</p>
+      </details>
+      <details>
+        <summary>How do dynamic category tabs work?</summary>
+        <p>Assign a category name when creating or editing a shortcut (such as "Work", "Social", "Dev"). The application dynamically parses active entries and populates the tab bar. Shortcuts lacking a category automatically default to "General".</p>
+      </details>
+      <details>
+        <summary>How do I configure Cloud Sync?</summary>
+        <p>Generate a Personal Access Token (classic) with <code>gist</code> permissions in your GitHub Developer Settings, then paste it under Settings. Click <strong>Push</strong> to sync your current layout to GitHub. On other systems, paste your GitHub Token and Gist ID, and click <strong>Pull</strong> to download your workspace configuration.</p>
+      </details>
+      <details>
+        <summary>How do I custom-upload or change icons?</summary>
+        <p>You can supply an explicit remote URL or upload local image files (under 50KB to respect storage quotas) during the shortcut creation phase. If left blank, the launcher sequentially queries Google and DuckDuckGo favicon servers, saving resolved icons to memory. If none exist, it generates a fallback container using the page initials.</p>
+      </details>
+      <details>
+        <summary>Where is my personal data stored?</summary>
+        <p>All information, metadata, and token values are kept locally inside the browser profile sandboxed environment using synchronized storage APIs. Data is never broadcast to unauthorized third-party servers. Your Cloud Sync backups are managed exclusively inside your self-owned private GitHub account.</p>
+      </details>
+      <details>
+        <summary>How does backup portability work?</summary>
+        <p>Under Settings, click <strong>Export</strong> to download a text representation of your configuration as a <code>.json</code> file. To recover data elsewhere, click <strong>Import</strong> and upload that file. Use <strong>Reset Layout</strong> to instantly scrub local caches and restore original defaults.</p>
+      </details>
+    </div>
+  </div>
+
+  <!-- Custom Confirm and Alert Box Modal -->
+  <div id="confirmAndAlertBox" class="confirmAndAlertBox hidden" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modalCard" role="document" aria-labelledby="confirmAndAlertBoxTitle" aria-describedby="confirmAndAlertBoxMessage">
+      <div class="modalHeader">
+        <h3 id="confirmAndAlertBoxTitle"></h3>
+      </div>
+      <div id="confirmAndAlertBoxMessage" class="modalBody"></div>
+      <div class="modalFooter">
+        <button id="confirmAndAlertBoxCancel" class="modalBtn btnSecondary" data-i18n="Cancel">Cancel</button>
+        <button id="confirmAndAlertBoxOk" class="modalBtn btnPrimary" data-i18n="Okay">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+  <!-- MegaMind Solutions Toaster Library -->
+>>>>>>> Stashed changes
   <script src="toaster.js"></script>
   <script type="module" src="init.js"></script>
 </body>

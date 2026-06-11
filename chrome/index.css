@@ -23,7 +23,7 @@
     --white: #fff;
 }
 
-body.dark-theme {
+body.darkTheme {
     --accent: #ffb4ab;
     --accent-h: #72342e;
     --accent-soft: #ffb4ab99;
@@ -49,6 +49,7 @@ body {
     overflow: hidden;
 }
 
+<<<<<<< Updated upstream
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -68,10 +69,15 @@ body {
 ::-webkit-scrollbar-thumb:active {
     background: var(--accent-h);
     cursor: grabbing;
+=======
+/* Helper Class */
+.hidden {
+    display: none !important;
+>>>>>>> Stashed changes
 }
 
 /* Header Area styling */
-.cal-header {
+.calHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -80,7 +86,7 @@ body {
     gap: 8px;
 }
 
-#cal-search-bar {
+#calSearchBar {
     flex-grow: 1;
     padding: 8px 12px;
     border-radius: var(--radius-pill);
@@ -91,7 +97,7 @@ body {
     font-size: 13px;
 }
 
-#cal-sort-select {
+#calSortSelect {
     padding: 8px 10px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--border);
@@ -102,13 +108,13 @@ body {
     font-size: 13px;
 }
 
-#cal-search-bar:focus,
-#cal-sort-select:focus {
+#calSearchBar:focus,
+#calSortSelect:focus {
     border-color: var(--accent);
     box-shadow: var(--shadow-h);
 }
 
-#cal-theme-toggle {
+#calThemeToggle {
     background: transparent;
     border: none;
     cursor: pointer;
@@ -119,12 +125,17 @@ body {
     align-items: center;
 }
 
+<<<<<<< Updated upstream
 #cal-theme-toggle:hover {
     background: var(--gray-mid);
+=======
+#calThemeToggle:hover {
+    background: var(--grayMedium);
+>>>>>>> Stashed changes
 }
 
 /* Dynamic Categories Tab Bar */
-.cal-tabs-container {
+.calTabsContainer {
     display: flex;
     gap: 6px;
     overflow-x: auto;
@@ -138,7 +149,7 @@ body {
     display: none; /* Hide for Chrome/Safari */
 }
 
-.category-tab {
+.categoryTab {
     flex-shrink: 0;
     padding: 6px 14px;
     border-radius: var(--radius-pill);
@@ -151,19 +162,19 @@ body {
     transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.category-tab:hover {
+.categoryTab:hover {
     border-color: var(--accent);
     background: var(--gray-mid);
 }
 
-.category-tab.active {
+.categoryTab.active {
     background: var(--accent);
     color: var(--bg);
     border-color: var(--accent);
 }
 
 /* Shortcuts Grid system */
-.cal-link-grid {
+.calLinkGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 10px;
@@ -174,6 +185,7 @@ body {
     padding: 2px;
 }
 
+<<<<<<< Updated upstream
 @media (max-height: 600px) {
     .cal-link-grid {
         max-height: 63vh;
@@ -194,6 +206,52 @@ body {
 .shape-square .card .icon,
 .shape-square .card .icon img {
     border-radius: var(--radius-xs);
+=======
+@media (max-height: 1050px) {
+    .calLinkGrid {
+        max-height: 80vh;
+    }
+}
+
+@media (max-height: 850px) {
+    .calLinkGrid {
+        max-height: 77.5vh;
+    }
+}
+
+@media (max-height: 750px) {
+    .calLinkGrid {
+        max-height: 75vh;
+    }
+}
+
+@media (max-height: 700px) {
+    .calLinkGrid {
+        max-height: 72.5vh;
+    }
+}
+
+@media (max-height: 600px) {
+    .calLinkGrid {
+        max-height: 68vh;
+    }
+}
+
+@media (max-height: 500px) {
+    .calLinkGrid {
+        max-height: 65vh;
+    }
+}
+
+.shapeCircle .card .icon,
+.shapeCircle .card .icon img {
+    border-radius: 999px;
+}
+
+.shapeSquare .card .icon,
+.shapeSquare .card .icon img {
+    border-radius: 0;
+>>>>>>> Stashed changes
 }
 
 .card {
@@ -210,14 +268,9 @@ body {
     transition: background .2s ease, transform .2s ease;
     animation: fade3 .4s ease-in-out;
     border: 1px solid transparent;
-    cursor: grab;
+    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
-}
-
-.card.dragging {
-    opacity: .4;
-    transform: scale(.93);
 }
 
 .card:hover {
@@ -226,7 +279,11 @@ body {
 }
 
 .card.pinned::before {
+<<<<<<< Updated upstream
     content: '📌';
+=======
+    content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9IiNmZjAwMDAiIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE5IiBoZWlnaHQ9IjE5Ij4NCiAgICA8cGF0aA0KICAgICAgICBkPSJNOS44MjguNzIyYS41LjUgMCAwIDEgLjM1NC4xNDZsNC45NSA0Ljk1YS41LjUgMCAwIDEgMCAuNzA3Yy0uNDguNDgtMS4wNzIuNTg4LTEuNTAzLjU4OC0uMTc3IDAtLjMzNS0uMDE4LS40Ni0uMDM5bC0zLjEzNCAzLjEzNGE1LjkyNyA1LjkyNyAwIDAgMSAuMTYgMS4wMTNjLjA0Ni43MDItLjAzMiAxLjY4Ny0uNzIgMi4zNzVhLjUuNSAwIDAgMS0uNzA3IDBsLTIuODI5LTIuODI4LTMuMTgyIDMuMTgyYy0uMTk1LjE5NS0xLjIxOS45MDItMS40MTQuNzA3LS4xOTUtLjE5NS41MTIdMS4yMi43MDctMS40MTRsMy4xODItMy4xODItMi44MjgtMi44MjlhLjUuNSAwIDAgMSAwLS43MDdjLjY4OC0uNjg4IDEuNjczLS43NjcgMi4zNzUtLjcyYTUuOTIyIDUuOTIyIDAgMCAxIDEuMDEzLjE2bDMuMTM0LTMuMTMzYTIuNzcyIDIuNzcyIDAgMCAxLS4wNC0uNDYxYzAtLjQzLjEwOC0xLjAyMi41ODktMS41MDNhLjUuNSAwIDAgMSAuMzUzLS4xNDZ6IiAvPg0KPC9zdmc+);
+>>>>>>> Stashed changes
     position: absolute;
     top: -4px;
     left: -4px;
@@ -275,7 +332,7 @@ body {
     }
 }
 
-.menu-btn {
+.menuBtn {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -291,16 +348,21 @@ body {
     transition: opacity 0.2s;
 }
 
-.card:hover .menu-btn {
+.card:hover .menuBtn {
     opacity: 1;
 }
 
+<<<<<<< Updated upstream
 .menu-btn:hover {
     background: var(--gray-mid);
+=======
+.menuBtn:hover {
+    background: var(--grayMedium);
+>>>>>>> Stashed changes
 }
 
 /* Context Menu elements */
-.context-menu {
+.contextMenu {
     display: none;
     flex-direction: column;
     position: absolute;
@@ -315,7 +377,7 @@ body {
     padding: 4px 0;
 }
 
-.context-menu button {
+.contextMenu button {
     background: none;
     border: none;
     text-align: start;
@@ -327,8 +389,13 @@ body {
     color: var(--text);
 }
 
+<<<<<<< Updated upstream
 .context-menu button:hover {
     background: var(--gray-mid);
+=======
+.contextMenu button:hover {
+    background: var(--grayMedium);
+>>>>>>> Stashed changes
 }
 
 @keyframes fade5 {
@@ -343,7 +410,7 @@ body {
 }
 
 /* App control bar footer */
-.cal-controls {
+.calControls {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -356,7 +423,7 @@ body {
     border-top: 1px solid var(--border);
 }
 
-.cal-controls button {
+.calControls button {
     padding: 6px 12px;
     font-size: 12px;
     width: 85px;
@@ -368,17 +435,27 @@ body {
     font-weight: bold;
 }
 
+<<<<<<< Updated upstream
 .cal-controls button:hover {
     background: var(--accent-h);
+=======
+.calControls button:hover {
+    background: var(--accentHover);
+>>>>>>> Stashed changes
     color: var(--text);
 }
 
 /* Side Panels Drawer styling (Settings & Info Drawers) */
-.side-panel {
+.sidePanel {
     position: fixed;
     top: 0;
+<<<<<<< Updated upstream
     right: -330px; /* Hidden offscreen margin */
     width: 310px;
+=======
+    right: -100%;
+    width: 350px;
+>>>>>>> Stashed changes
     height: 100vh;
     background: var(--alert-bg);
     backdrop-filter: var(--panel-bkdrop);
@@ -390,11 +467,11 @@ body {
     flex-direction: column;
 }
 
-.side-panel.open {
+.sidePanel.open {
     right: 0;
 }
 
-.side-panel-header {
+.sidePanelHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -404,13 +481,13 @@ body {
     color: var(--alert-heading);
 }
 
-.side-panel-header h2 {
+.sidePanelHeader h2 {
     margin: 0;
     font-size: 16px;
     font-weight: 650;
 }
 
-.side-panel-close {
+.sidePanelClose {
     background: transparent;
     border: none;
     font-size: 24px;
@@ -420,25 +497,25 @@ body {
     padding: 0;
 }
 
-.side-panel-content {
+.sidePanelContent {
     padding: 16px;
     overflow-y: auto;
     flex-grow: 1;
 }
 
 /* Settings Form elements */
-.settings-section {
+.settingsSection {
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 12px;
 }
 
-.settings-section:last-child {
+.settingsSection:last-child {
     border-bottom: none;
     padding-bottom: 0;
 }
 
-.settings-section h3 {
+.settingsSection h3 {
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 12px;
@@ -447,7 +524,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-.settings-row {
+.settingsRow {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -455,19 +532,19 @@ body {
     gap: 8px;
 }
 
-.settings-field {
+.settingsField {
     display: flex;
     flex-direction: column;
     gap: 4px;
     margin-bottom: 10px;
 }
 
-.settings-field label {
+.settingsField label {
     font-size: 11px;
     font-weight: 600;
 }
 
-.settings-field input {
+.settingsField input {
     padding: 6px 10px;
     border-radius: var(--radius-xs);
     border: 1px solid var(--border);
@@ -477,17 +554,27 @@ body {
     font-size: 12px;
 }
 
-.settings-field input:focus {
+.settingsField input:focus {
     border-color: var(--accent);
 }
 
-.category-manager-input {
+.categoryManagerInput {
     display: flex;
     gap: 6px;
     margin-bottom: 8px;
 }
 
+<<<<<<< Updated upstream
 .category-manager-input input {
+=======
+.categoryManagerInputSection {
+    width: 100%;
+    display: inline-flex;
+    gap: .5rem;
+}
+
+.categoryManagerInputSection input {
+>>>>>>> Stashed changes
     flex-grow: 1;
     padding: 6px 10px;
     border-radius: var(--radius-xs);
@@ -498,9 +585,9 @@ body {
     font-size: 12px;
 }
 
-.category-manager-input button,
-.settings-row button,
-.sync-actions button {
+.categoryManagerInput button,
+.settingsRow button,
+.syncActions button {
     padding: 6px 12px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--accent);
@@ -512,25 +599,29 @@ body {
     transition: background 0.2s, color 0.2s;
 }
 
-.category-manager-input button:hover,
-.settings-row button:hover,
-.sync-actions button:hover {
+.settingsRow button {
+    min-width: fit-content;
+}
+
+.categoryManagerInput button:hover,
+.settingsRow button:hover,
+.syncActions button:hover {
     background: var(--accent);
     color: var(--bg);
 }
 
-.settings-row .danger {
+.settingsRow .danger {
     border-color: var(--red);
     color: var(--red);
     width: 100%;
 }
 
-.settings-row .danger:hover {
+.settingsRow .danger:hover {
     background: var(--red);
     color: var(--white);
 }
 
-.settings-list {
+.settingsList {
     max-height: 100px;
     overflow-y: auto;
     border: 1px solid var(--border);
@@ -538,7 +629,7 @@ body {
     background: var(--bg);
 }
 
-.settings-list-item {
+.settingsListItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -547,11 +638,11 @@ body {
     font-size: 12px;
 }
 
-.settings-list-item:last-child {
+.settingsListItem:last-child {
     border-bottom: none;
 }
 
-.delete-cat-btn {
+.deleteCatBtn {
     background: transparent;
     border: none;
     color: var(--red);
@@ -560,7 +651,7 @@ body {
     line-height: 1;
 }
 
-.settings-row select {
+.settingsRow select {
     padding: 5px 10px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--border);
@@ -570,42 +661,64 @@ body {
     font-size: 12px;
 }
 
-.sync-actions {
+.syncActions {
     justify-content: flex-start;
     gap: 8px;
 }
 
-.sync-actions button {
+.syncActions button {
     flex: 1;
 }
 
 /* Info Sidebar elements */
-.app-info-content h2 {
+.appInfoContent h2 {
     font-size: 16px;
     margin-top: 0;
 }
 
-.app-info-content h3 {
+.appInfoContent h3 {
     font-size: 13px;
     font-weight: 500;
 }
 
-.app-info-content h4 {
+.appInfoContent h4 {
     font-size: 12px;
     margin-bottom: 6px;
     color: var(--accent);
 }
 
-.app-info-content ul {
+.appInfoContent ul {
     padding-left: 18px;
-    margin: 0;
+    margin: 0 0 16px;
     font-size: 11px;
     line-height: 1.6;
 }
 
+.appInfoContent details {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    padding: 6px 10px;
+}
+
+.appInfoContent summary {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    color: var(--text);
+}
+
+.appInfoContent details p {
+    margin: 6px 0 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text);
+}
+
 /* Add Shortcut dialog styling */
-.add-link-box,
-.info-dialog {
+.addLinkBox,
+.infoDialog {
     display: none;
     position: fixed;
     top: 0;
@@ -618,10 +731,17 @@ body {
     z-index: 1080;
 }
 
+<<<<<<< Updated upstream
 .add-link-box-content,
 .info-dialog-content {
     background: var(--alert-bg);
     backdrop-filter: var(--panel-bkdrop);
+=======
+.addLinkBoxContent,
+.infoDialogContent {
+    background: var(--alertBgColor);
+    backdrop-filter: var(--panelBackDropBlur);
+>>>>>>> Stashed changes
     text-align: center;
     padding-bottom: 20px;
     border-radius: var(--radius-lg);
@@ -643,8 +763,8 @@ body {
     }
 }
 
-.add-link-box-content h2,
-.info-dialog-heading {
+.addLinkBoxContent h2,
+.infoDialogHeading {
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
     padding: 12px;
@@ -655,7 +775,7 @@ body {
     background: var(--alert-heading-bg);
 }
 
-.add-link-box-content input[type="text"] {
+.addLinkBoxContent input[type="text"] {
     width: calc(100% - 36px);
     padding: 8px 10px;
     font-size: 13px;
@@ -667,11 +787,11 @@ body {
     color: var(--text);
 }
 
-.add-link-box-content input[type="text"]:focus {
+.addLinkBoxContent input[type="text"]:focus {
     border-color: var(--accent);
 }
 
-.icon-uploader {
+.iconUploader {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -679,13 +799,13 @@ body {
     font-size: 12px;
 }
 
-#cal-link-Icon-File {
+#calLinkIconFile {
     margin-left: 8px;
     max-width: 160px;
     color: var(--text);
 }
 
-#cal-link-Icon-File::file-selector-button {
+#calLinkIconFile::file-selector-button {
     padding: 4px 8px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--accent);
@@ -695,15 +815,17 @@ body {
     font-size: 11px;
 }
 
-.add-link-box-buttons {
+.addLinkBoxButtons {
     display: flex;
     flex-direction: row-reverse;
+    justify-content: center;
     margin-top: 5px;
     padding: 0 16px;
 }
 
-.add-link-box-buttons button {
-    flex-grow: 1;
+.addLinkBoxButtons button {
+    min-width: 130px;
+    width: 150px;
     padding: 8px 10px;
     margin: 0 4px;
     font-size: 13px;
@@ -713,30 +835,40 @@ body {
     font-weight: bold;
 }
 
+<<<<<<< Updated upstream
 .add-link-box-buttons .cancel {
     background: var(--gray-mid);
+=======
+.addLinkBoxButtons .cancel {
+    background: var(--grayMedium);
+>>>>>>> Stashed changes
     color: var(--text);
 }
 
-.add-link-box-buttons .add {
+.addLinkBoxButtons .add {
     background: var(--accent);
     color: var(--bg);
 }
 
+<<<<<<< Updated upstream
 .add-link-box-buttons .add:hover {
     background: var(--accent-h);
+=======
+.addLinkBoxButtons .add:hover {
+    background: var(--accentHover);
+>>>>>>> Stashed changes
     color: var(--text);
 }
 
 /* Browsing suggestion details list */
-.call-top-sites-list {
+.calTopSitesList {
     max-height: 240px;
     overflow-y: auto;
     padding: 0 12px;
     text-align: left;
 }
 
-.top-site-item {
+.topSiteItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -744,18 +876,18 @@ body {
     border-bottom: 1px solid var(--border);
 }
 
-.top-site-item:last-child {
+.topSiteItem:last-child {
     border-bottom: none;
 }
 
-.top-site-info {
+.topSiteInfo {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     width: 75%;
 }
 
-.top-site-title {
+.topSiteTitle {
     font-weight: 600;
     font-size: 12px;
     white-space: nowrap;
@@ -763,7 +895,7 @@ body {
     text-overflow: ellipsis;
 }
 
-.top-site-url {
+.topSiteUrl {
     font-size: 10px;
     color: var(--accent);
     white-space: nowrap;
@@ -771,7 +903,7 @@ body {
     text-overflow: ellipsis;
 }
 
-.add-top-site-btn {
+.addTopSiteBtn {
     background: var(--accent);
     color: var(--bg);
     border: none;
@@ -782,15 +914,21 @@ body {
     font-size: 11px;
 }
 
+<<<<<<< Updated upstream
 .add-top-site-btn:hover {
     background: var(--accent-h);
+=======
+.addTopSiteBtn:hover {
+    background: var(--accentHover);
+>>>>>>> Stashed changes
     color: var(--text);
 }
 
-#cal-suggested-close-btn {
-    display: block;
+#calSuggestedCloseBtn {
+    min-width: 130px;
+    width: 150px;
     margin: 15px auto 0 auto;
-    padding: 6px 20px;
+    padding: 8px 10px;
     border: none;
     border-radius: var(--radius-pill);
     background: var(--gray-mid);
@@ -800,6 +938,115 @@ body {
     font-size: 12px;
 }
 
-#cal-suggested-close-btn:hover {
+#calSuggestedCloseBtn:hover {
     opacity: .8;
+<<<<<<< Updated upstream
+=======
+}
+
+/* Custom Confirm and Alert Dialog Elements */
+.confirmAndAlertBox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--overlay);
+    align-items: center;
+    justify-content: center;
+    z-index: 1090;
+}
+
+.confirmAndAlertBox:not(.hidden) {
+    display: flex;
+}
+
+.modalCard {
+    background: var(--alertBgColor);
+    backdrop-filter: var(--panelBackDropBlur);
+    text-align: center;
+    padding-bottom: 20px;
+    width: 90%;
+    max-width: 360px;
+    box-shadow: var(--shadowOutset);
+    border: 1px solid var(--border);
+    animation: fade4 .3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.modalHeader {
+    background: var(--alertHeadingBgColor);
+    padding: 12px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--alertHeadingColor);
+}
+
+.modalBody {
+    font-size: 13px;
+    color: var(--text);
+    padding: 0 16px;
+    text-align: left;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.modalFooter {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    padding: 0 16px;
+    gap: 8px;
+}
+
+.modalBtn {
+    min-width: 130px;
+    width: 150px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.modalBtn.btnSecondary {
+    background: var(--grayMedium);
+    color: var(--text);
+}
+
+.modalBtn.btnPrimary {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.modalBtn.btnPrimary:hover {
+    background: var(--accentHover);
+    color: var(--text);
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    cursor: grab;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: var(--accentHover);
+    cursor: grabbing;
+>>>>>>> Stashed changes
 }
