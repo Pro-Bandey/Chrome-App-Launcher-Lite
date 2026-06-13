@@ -14,7 +14,7 @@
 
   "action": {
     "default_popup": "index.html",
-    "default_title": "Open Launcher",
+    "default_title": "Chrome App Launcher",
     "default_icon": {
       "16": "icons/16.png",
       "32": "icons/32.png",
@@ -24,7 +24,8 @@
   },
 
   "side_panel": {
-    "default_path": "index.html"
+    "default_path": "index.html",
+    "default_title": "Chrome App Launcher"
   },
 
   "permissions": ["tabs", "storage", "sidePanel", "activeTab", "topSites"],
