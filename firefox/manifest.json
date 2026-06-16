@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Browser App Launcher Lite",
-  "version": "11.0",
+  "version": "13.0",
   "description": "A lightweight, customizable Extension that lets you create and manage website shortcuts — similar to a mini app launcher.",
   "homepage_url": "https://Pro-Bandey.github.io/Projects/?Pro=Chrome-App-Launcher-Lite",
 
@@ -34,7 +34,7 @@
     }
   },
 
-  "permissions": ["tabs", "storage", "sidePanel", "activeTab", "topSites"],
+  "permissions": ["tabs", "storage", "activeTab", "topSites"],
 
   "host_permissions": ["<all_urls>"],
 
@@ -46,6 +46,7 @@
       },
       "description": "Open the launcher"
     },
+    
     "add-new-link": {
       "suggested_key": {
         "default": "Ctrl+Shift+A",

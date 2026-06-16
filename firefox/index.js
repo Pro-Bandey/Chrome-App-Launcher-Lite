@@ -62,6 +62,16 @@
     visible: false
   };
 
+  function escapeHTML(str) {
+    if (!str) return "";
+    return str.toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   if (storageAPI && extAPI.storage.onChanged) {
     extAPI.storage.onChanged.addListener((changes, area) => {
       if ((area === 'sync' || area === 'local')) {
@@ -264,11 +274,20 @@
 
     categoryDatalist.innerHTML = "";
     launcherCategories.forEach(cat => {
-      categoryDatalist.innerHTML += `<option value="${cat}">`;
+      categoryDatalist.innerHTML += `<option value="${escapeHTML(cat)}">`;
     });
   }
 
   function renderGrid() {
+    let focusGlobalIdx = null;
+    let wasFocused = false;
+
+    // Remember the keyboard focus state seamlessly across re-renders
+    if (keyboardFocusedIndex >= 0 && activeCardNodes[keyboardFocusedIndex]) {
+      focusGlobalIdx = activeCardNodes[keyboardFocusedIndex].dataset.index;
+      wasFocused = (document.activeElement === activeCardNodes[keyboardFocusedIndex]);
+    }
+
     grid.innerHTML = "";
     const searchTerm = searchBar.value.toLowerCase();
     const sortVal = sortSelect.value;
@@ -316,16 +335,19 @@
       const idx = launcherLinks.indexOf(link);
       const card = document.createElement("a");
       card.className = "card";
-      card.href = link.url;
+      card.href = escapeHTML(link.url);
       card.tabIndex = 0;
       card.setAttribute("role", "gridcell");
-      if (link.isPinned) card.classList.add("pinned");
-      card.title = `${link.name}` + (link.category ? ` (${link.category})` : "") + ` | Visited: ${link.clicks || 0}`;
+      if (link.isPinned)
+        card.classList.add("pinned");
+      const safeName = escapeHTML(link.name);
+      const safeCategory = escapeHTML(link.category);
+      card.title = `${safeName}` + (link.category ? ` (${safeCategory})` : "") + ` | Visited: ${link.clicks || 0}`;
       card.dataset.index = idx;
 
-      const fallback = link.fallback || generateFallback(link.name);
+      const fallback = escapeHTML(link.fallback || generateFallback(link.name));
       const bg = getRandomColor();
-      card.innerHTML = `<div class="icon" style="background:${bg};color:#fff;">${fallback}</div><div class="name">${link.name}</div><div class="menuBtn">⋮</div>`;
+      card.innerHTML = `<div class="icon" style="background:${bg};color:#fff;">${fallback}</div><div class="name">${safeName}</div><div class="menuBtn">⋮</div>`;
 
       card.addEventListener("click", e => {
         if (!e.target.classList.contains("menuBtn")) {
@@ -356,7 +378,22 @@
     grid.appendChild(fragment);
 
     activeCardNodes = Array.from(grid.querySelectorAll('.card'));
-    keyboardFocusedIndex = -1;
+
+    // Automatically re-focus mapped keyboard elements if grid was rebuilt externally
+    if (focusGlobalIdx !== null) {
+      const reMapIndex = activeCardNodes.findIndex(node => node.dataset.index === focusGlobalIdx);
+      if (reMapIndex !== -1) {
+        keyboardFocusedIndex = reMapIndex;
+        updateKeyboardFocusState();
+        if (wasFocused) {
+          activeCardNodes[keyboardFocusedIndex].focus();
+        }
+      } else {
+        keyboardFocusedIndex = -1;
+      }
+    } else {
+      keyboardFocusedIndex = -1;
+    }
   }
 
   function openLink(index, newTab = false) {
@@ -386,9 +423,11 @@
   }
 
   function generateFallback(name) {
-    const parts = name.trim().split(" ").filter(Boolean);
+    const clean = name.trim();
+    if (!clean) return "??";
+    const parts = clean.split(" ").filter(Boolean);
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 3).toUpperCase();
+    return clean.substring(0, 3).toUpperCase();
   }
 
   function getRandomColor() {
@@ -399,7 +438,7 @@
   function loadFavicon(card, link, fallback) {
     const icon = card.querySelector(".icon");
     if (link.icon) {
-      icon.innerHTML = `<img src="${link.icon}">`;
+      icon.innerHTML = `<img src="${escapeHTML(link.icon)}">`;
       icon.style.background = 'transparent';
       return;
     }
@@ -477,7 +516,11 @@
   document.addEventListener("click", () => { contextMenu.style.display = "none"; });
   contextMenu.addEventListener("click", async e => {
     if (currentIndex === null) return;
-    const action = e.target.dataset.action;
+
+    // Hardened context menu to handle children clicks within the button map
+    const target = e.target.closest('[data-action]') || e.target;
+    const action = target.dataset.action;
+
     if (action === "calOpen") openLink(currentIndex, false);
     else if (action === "calNewTab") openLink(currentIndex, true);
     else if (action === "calIncognito") openIncognito(currentIndex);
@@ -488,7 +531,7 @@
     }
     else if (action === "calEdit") { editingIndex = currentIndex; openModal(true); }
     else if (action === "calDelete") {
-      const confirmed = await showConfirm(`Are you sure you want to delete "${launcherLinks[currentIndex].name}"?`, "Delete Link");
+      const confirmed = await showConfirm(`Are you sure you want to delete "${escapeHTML(launcherLinks[currentIndex].name)}"?`, "Delete Link");
       if (confirmed) {
         launcherLinks.splice(currentIndex, 1);
         saveAll();
@@ -522,7 +565,7 @@
     launcherCategories.forEach((cat, index) => {
       const item = document.createElement("div");
       item.className = "settingsListItem";
-      item.innerHTML = `<span>${cat}</span><button class="deleteCatBtn" data-index="${index}">&times;</button>`;
+      item.innerHTML = `<span>${escapeHTML(cat)}</span><button class="deleteCatBtn" data-index="${index}">&times;</button>`;
       item.querySelector(".deleteCatBtn").addEventListener("click", () => deleteCategory(index));
       container.appendChild(item);
     });
@@ -530,7 +573,7 @@
 
   async function deleteCategory(index) {
     const catName = launcherCategories[index];
-    const confirmed = await showConfirm(`Are you sure you want to remove the Category: "${catName}"? Existing shortcuts inside will default back to "General".`, "Delete Category");
+    const confirmed = await showConfirm(`Are you sure you want to remove the Category: "${escapeHTML(catName)}"? Existing shortcuts inside will default back to "General".`, "Delete Category");
     if (confirmed) {
       launcherLinks.forEach(l => { if (l.category === catName) l.category = ""; });
       launcherCategories.splice(index, 1);
@@ -763,8 +806,8 @@
           item.className = "topSiteItem";
           item.innerHTML = `
             <div class="topSiteInfo">
-              <span class="topSiteTitle">${site.title || "Untitled Location"}</span>
-              <span class="topSiteUrl">${site.url}</span>
+              <span class="topSiteTitle">${escapeHTML(site.title || "Untitled Location")}</span>
+              <span class="topSiteUrl">${escapeHTML(site.url)}</span>
             </div>
             <button class="addTopSiteBtn" title="Add to Launcher">+</button>
           `;
@@ -944,12 +987,7 @@
           launcherLinks[globalIdx].isPinned = !launcherLinks[globalIdx].isPinned;
           saveAll();
           renderGrid();
-
-          const reMapIndex = activeCardNodes.findIndex(node => parseInt(node.dataset.index) === globalIdx);
-          if (reMapIndex !== -1) {
-            keyboardFocusedIndex = reMapIndex;
-            activeCardNodes[keyboardFocusedIndex].focus();
-          }
+          // `renderGrid` natively handles preserving focused mapping post-render
         }
 
         if (e.key.toLowerCase() === 'e') {
@@ -960,12 +998,11 @@
 
         if (e.key === 'Delete' || e.key === 'Backspace') {
           e.preventDefault();
-          const confirmed = await showConfirm(`Are you sure you want to delete "${launcherLinks[globalIdx].name}"?`, "Delete Link");
+          const confirmed = await showConfirm(`Are you sure you want to delete "${escapeHTML(launcherLinks[globalIdx].name)}"?`, "Delete Link");
           if (confirmed) {
             launcherLinks.splice(globalIdx, 1);
             saveAll();
             renderGrid();
-            keyboardFocusedIndex = -1;
           }
         }
       }
