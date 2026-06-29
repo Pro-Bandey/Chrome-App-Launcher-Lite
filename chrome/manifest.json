@@ -3,7 +3,7 @@
   "name": "Chrome App Launcher Lite",
   "version": "13.0",
   "description": "A lightweight, customizable Extension that lets you create and manage website shortcuts — similar to a mini app launcher.",
-  "homepage_url": "https://Pro-Bandey.github.io/Projects/?Pro=Chrome-App-Launcher-Lite",
+  "homepage_url": "https://Pro-Bandey.github.io/?id==Chrome-App-Launcher-Lite",
 
   "icons": {
     "16": "icons/16.png",
